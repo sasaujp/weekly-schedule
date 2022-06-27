@@ -507,74 +507,77 @@ const Home: NextPage = () => {
             </SectionWrapper>
           )}
         </Grid>
-        <Grid
-          item
-          sx={{
-            overflowY: "scroll",
-            maxHeight: "calc(100vh - 32px)",
-          }}
-        >
-          {value && (
-            <Card sx={{ padding: "16px" }}>
-              <Typography>
-                {value.getFullYear()}年{value.getMonth() + 1}月{value.getDate()}
-                日（日）
-              </Typography>
-              <Button variant="contained" onClick={onCopySunday}>
-                コピーする
-              </Button>
-            </Card>
-          )}
-
-          <Card sx={{ marginTop: "16px", padding: "16px" }}>
-            <p
-              dangerouslySetInnerHTML={{
-                __html: html,
-              }}
-            />
-            <Button variant="contained" onClick={onCopySundayProgram}>
-              コピーする
-            </Button>
-          </Card>
-
-          {dates.map((d, idx) => {
-            const onCopyDate = () => {
-              const text = `${d.getFullYear()}年${
-                d.getMonth() + 1
-              }月${d.getDate()}日（${WeekDays[d.getDay()]}）`;
-
-              navigator.clipboard.writeText(text);
-              setNotice(text);
-              setOpen(true);
-            };
-            const onCopyHTML = () => {
-              navigator.clipboard.writeText(weekdayHTML[d.getDay()]);
-              setNotice(`${WeekDays[d.getDay()]}曜日のプログラム`);
-              setOpen(true);
-            };
-
-            return (
-              <Card key={idx} sx={{ marginTop: "16px", padding: "16px" }}>
+        {value && value.getDay() === 0 && (
+          <Grid
+            item
+            sx={{
+              overflowY: "scroll",
+              maxHeight: "calc(100vh - 32px)",
+            }}
+          >
+            {value && (
+              <Card sx={{ padding: "16px" }}>
                 <Typography>
-                  {d.getFullYear()}年{d.getMonth() + 1}月{d.getDate()}
-                  日（{WeekDays[d.getDay()]}）
+                  {value.getFullYear()}年{value.getMonth() + 1}月
+                  {value.getDate()}
+                  日（日）
                 </Typography>
-                <Button variant="contained" onClick={onCopyDate}>
-                  コピーする
-                </Button>
-
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: weekdayHTML[d.getDay()],
-                  }}
-                />
-                <Button variant="contained" onClick={onCopyHTML}>
+                <Button variant="contained" onClick={onCopySunday}>
                   コピーする
                 </Button>
               </Card>
-            );
-          })}
-        </Grid>
+            )}
+
+            <Card sx={{ marginTop: "16px", padding: "16px" }}>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: html,
+                }}
+              />
+              <Button variant="contained" onClick={onCopySundayProgram}>
+                コピーする
+              </Button>
+            </Card>
+
+            {dates.map((d, idx) => {
+              const onCopyDate = () => {
+                const text = `${d.getFullYear()}年${
+                  d.getMonth() + 1
+                }月${d.getDate()}日（${WeekDays[d.getDay()]}）`;
+
+                navigator.clipboard.writeText(text);
+                setNotice(text);
+                setOpen(true);
+              };
+              const onCopyHTML = () => {
+                navigator.clipboard.writeText(weekdayHTML[d.getDay()]);
+                setNotice(`${WeekDays[d.getDay()]}曜日のプログラム`);
+                setOpen(true);
+              };
+
+              return (
+                <Card key={idx} sx={{ marginTop: "16px", padding: "16px" }}>
+                  <Typography>
+                    {d.getFullYear()}年{d.getMonth() + 1}月{d.getDate()}
+                    日（{WeekDays[d.getDay()]}）
+                  </Typography>
+                  <Button variant="contained" onClick={onCopyDate}>
+                    コピーする
+                  </Button>
+
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: weekdayHTML[d.getDay()],
+                    }}
+                  />
+                  <Button variant="contained" onClick={onCopyHTML}>
+                    コピーする
+                  </Button>
+                </Card>
+              );
+            })}
+          </Grid>
+        )}
       </Grid>
       <Snackbar
         autoHideDuration={6000}
