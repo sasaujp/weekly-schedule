@@ -237,7 +237,7 @@ const Home: NextPage = () => {
   });
   const [study1, setStudy1] = useState<string>("");
   const [study2, setStudy2] = useState<string>("");
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const [notice, setNotice] = React.useState("");
 
   const mondayHTML = useWeekDayHTML(weekday[1]);
