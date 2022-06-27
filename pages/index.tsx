@@ -312,7 +312,7 @@ const Home: NextPage = () => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     fullWidth
-                    placeholder="おはようと言われる主"
+                    placeholder="試練を通して受け取る祝福"
                   ></TextField>
                 </FormWrapper>
 
@@ -361,7 +361,7 @@ const Home: NextPage = () => {
                     value={title2}
                     onChange={(e) => setTitle2(e.target.value)}
                     fullWidth
-                    placeholder="おはようと言われる主"
+                    placeholder="試練を通して受け取る祝福"
                   />
                 </FormWrapper>
                 <FormWrapper label="説教者">
@@ -425,7 +425,7 @@ const Home: NextPage = () => {
                     value={title3}
                     onChange={(e) => setTitle3(e.target.value)}
                     fullWidth
-                    placeholder="おはようと言われる主"
+                    placeholder="試練を通して受け取る祝福"
                   />
                 </FormWrapper>
                 <FormWrapper label="説教者">
