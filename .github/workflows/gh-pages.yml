@@ -47,7 +47,7 @@ jobs:
     # つまりHTMLからJSを読み込めない
     # これを回避するために.nojekyllファイルをoutディレクトリに作る
     - name: add nojekyll
-      run: touch ./out/.nojekyll
+      run: touch ./_next/.nojekyll
 
     # gh-pagesブランチにoutディレクトリの中身をプッシュする
     # gh-pagesブランチは自動的に作成される
