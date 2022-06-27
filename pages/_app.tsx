@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     Component.getLayout ?? ((page) => <BasicLayout>{page}</BasicLayout>);
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>
-      <Layout>{getLayout(<Component {...pageProps} />)}</Layout>;
+      <Layout>{getLayout(<Component {...pageProps} />)}</Layout>
     </LocalizationProvider>
   );
 }
