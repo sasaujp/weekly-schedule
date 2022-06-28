@@ -27,6 +27,7 @@ import {
   useWednesdayHTML,
   useWeekDayHTML,
 } from "../components/hooks/useHTML";
+import { PasterPicker } from "../components/PasterPicker";
 
 const WeekDays: { [key: number]: string } = {
   1: "月",
@@ -205,7 +206,7 @@ const Home: NextPage = () => {
     title3,
     paster3,
     bible3,
-    paster,
+    psalms,
     song31,
     song32
   );
@@ -334,15 +335,11 @@ const Home: NextPage = () => {
                     placeholder="試練を通して受け取る祝福"
                   ></TextField>
                 </FormWrapper>
-
-                <FormWrapper label="説教者">
-                  <TextField
-                    value={paster}
-                    onChange={(e) => setPaster(e.target.value)}
-                    fullWidth
-                    placeholder="髙橋　潤　牧師"
-                  />
-                </FormWrapper>
+                <PasterPicker
+                  id="primary-paster"
+                  value={paster}
+                  onChange={setPaster}
+                />
                 <FormWrapper label="聖書箇所">
                   <TextField
                     value={bible}
@@ -383,14 +380,11 @@ const Home: NextPage = () => {
                     placeholder="試練を通して受け取る祝福"
                   />
                 </FormWrapper>
-                <FormWrapper label="説教者">
-                  <TextField
-                    value={paster2}
-                    onChange={(e) => setPaster2(e.target.value)}
-                    fullWidth
-                    placeholder="髙橋　潤　牧師"
-                  />
-                </FormWrapper>
+                <PasterPicker
+                  id="secondary-paster"
+                  value={paster2}
+                  onChange={setPaster2}
+                />
                 <FormWrapper label="聖書箇所">
                   <TextField
                     value={bible2}
@@ -447,14 +441,11 @@ const Home: NextPage = () => {
                     placeholder="試練を通して受け取る祝福"
                   />
                 </FormWrapper>
-                <FormWrapper label="説教者">
-                  <TextField
-                    value={paster3}
-                    onChange={(e) => setPaster3(e.target.value)}
-                    fullWidth
-                    placeholder="髙橋　潤　牧師"
-                  />
-                </FormWrapper>
+                <PasterPicker
+                  id="evening-paster"
+                  value={paster3}
+                  onChange={setPaster3}
+                />
                 <FormWrapper label="聖書箇所">
                   <TextField
                     value={bible3}
