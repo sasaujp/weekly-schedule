@@ -72,13 +72,26 @@ export const useWednesdayHTML = (bible: string) => {
 聖書　${bible}`;
 };
 
-export const useTuesdayHTML = (bible: string, study: string) => {
+export const useTuesdayHTML = (
+  bible: string,
+  study1: string,
+  isTutorial: boolean,
+  book: string,
+  pageNumber: number
+) => {
   return `<strong>聖書講義</strong>　　－休会－<!--<a href="https://www.ginza-church.com/service/info/#kitou">　10時30分・小礼拝堂</a>--><br>
-「${study}」<br>
+「${study1}」<br>
 <strong>祈祷会</strong>　　　－休会－<!--講義に引き続き11時30分まで--><br>
 <br>
 <strong>正午礼拝</strong>　　12時15分・大礼拝堂<br>
-聖書　${bible}`;
+聖書　${bible}${
+    isTutorial
+      ? `<br>
+<br>
+<strong>入門講座</strong>　　<a href="https://www.ginza-church.com/service/info/#nyuumon">18時・小礼拝堂</a><br>
+『${book}』${pageNumber}頁-`
+      : ""
+  }`;
 };
 
 export const useThursdayHTML = (bible: string, study: string) => {

@@ -95,6 +95,14 @@ const Home: NextPage = () => {
     return value.getDate() <= 7;
   }, [value]);
 
+  const isFirstOrThirdTuesday = useMemo(() => {
+    const tuesday = dates[1];
+    if (!tuesday) {
+      return false;
+    }
+    const date = tuesday.getDate();
+    return date <= 7 || (date >= 15 && date <= 21);
+  }, [dates]);
   const [url, setUrl] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [paster, setPaster] = useState<string>("");
@@ -237,11 +245,19 @@ const Home: NextPage = () => {
   });
   const [study1, setStudy1] = useState<string>("");
   const [study2, setStudy2] = useState<string>("");
+  const [book, setBook] = useState<string>("改めて学ぶ、教団信仰告白");
+  const [bookPages, setBookPages] = useState<number>(0);
   const [open, setOpen] = React.useState(false);
   const [notice, setNotice] = React.useState("");
 
   const mondayHTML = useWeekDayHTML(weekday[1]);
-  const tuesdayHTML = useTuesdayHTML(weekday[2], study1);
+  const tuesdayHTML = useTuesdayHTML(
+    weekday[2],
+    study1,
+    isFirstOrThirdTuesday,
+    book,
+    bookPages
+  );
   const wednesdayHTML = useWednesdayHTML(weekday[3]);
   const thursdayHTML = useThursdayHTML(weekday[4], study2);
   const fridayHTML = useWeekDayHTML(weekday[5]);
@@ -281,6 +297,9 @@ const Home: NextPage = () => {
               renderInput={(params) => <TextField {...params} />}
             />
             {isFirstSunday && <Typography>第一日曜日です</Typography>}
+            {isFirstOrThirdTuesday && (
+              <Typography>第一・三火曜日です</Typography>
+            )}
           </FormWrapper>
           {value && value.getDay() !== 0 && (
             <Typography color="red">日曜日を選択してください</Typography>
@@ -503,6 +522,23 @@ const Home: NextPage = () => {
                     placeholder="創世記　27章18-29節"
                   />
                 </FormWrapper>
+                {isFirstOrThirdTuesday && (
+                  <FormWrapper label="入門講座の内容">
+                    <TextField
+                      value={book}
+                      onChange={(e) => setBook(e.target.value)}
+                      fullWidth
+                      placeholder="改めて学ぶ、教団信仰告白"
+                    />
+                    <TextField
+                      type="number"
+                      value={bookPages}
+                      onChange={(e) => setBookPages(parseInt(e.target.value))}
+                      fullWidth
+                      placeholder="117"
+                    />
+                  </FormWrapper>
+                )}
               </>
             </SectionWrapper>
           )}
