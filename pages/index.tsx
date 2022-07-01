@@ -720,7 +720,7 @@ const Home: NextPage = () => {
                     <TextField
                       type="number"
                       value={bookPages}
-                      onChange={(e) => setBookPages(parseInt(e.target.value))}
+                      onChange={(e) => setBookPages(e.target.value)}
                       fullWidth
                       placeholder="117"
                     />
