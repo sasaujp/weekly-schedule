@@ -5,51 +5,74 @@ export const usePrimaryHTML = (
   title: string,
   paster: string,
   bible: string,
+  chapter: string,
+  verseFrom: string,
+  verseTo: string,
   psalms: string,
   song1: string,
   song2: string
 ) => {
   return useMemo(() => {
+    const optional = verseFrom !== verseTo ? `-${verseTo}` : "";
     return `<strong>教会学校　　9時・大礼拝堂<a href="https://www.ginza-church.com/cs/top/">（インターネット配信・家庭礼拝）</a></strong><br>
 <br>
 <strong>主日礼拝　　10時30分・大礼拝堂<a href="${url}" target=" rel=" rel="noopener noreferrer">（インターネット配信・家庭礼拝）</a></strong><br>
 交読詩編　${psalms}<br>
 説教　「${title}」　${paster}<br>
-聖書　${bible}<br>
+聖書　${bible}　${chapter}章${verseFrom}${optional}節<br>
 讃美歌　${song1}、${song2}`;
-  }, [url, title, paster, bible, psalms, song1, song2]);
+  }, [
+    url,
+    title,
+    paster,
+    bible,
+    chapter,
+    verseFrom,
+    verseTo,
+    psalms,
+    song1,
+    song2,
+  ]);
 };
 
 export const useSecondaryHTML = (
   title: string,
   paster: string,
   bible: string,
+  chapter: string,
+  verseFrom: string,
+  verseTo: string,
   song1: string,
   song2: string
 ) => {
   return useMemo(() => {
+    const optional = verseFrom !== verseTo ? `-${verseTo}` : "";
     return `<strong>主日第二礼拝　15時・大礼拝堂</strong><br>
 説教　「${title}」　${paster}<br>
-聖書　${bible}<br>
+聖書　${bible}　${chapter}章${verseFrom}${optional}節<br>
 讃美歌　${song1}、${song2}`;
-  }, [title, paster, bible, song1, song2]);
+  }, [title, paster, bible, chapter, verseFrom, verseTo, song1, song2]);
 };
 
 export const useEveningHTML = (
   title: string,
   paster: string,
   bible: string,
+  chapter: string,
+  verseFrom: string,
+  verseTo: string,
   psalms: string,
   song1: string,
   song2: string
 ) => {
   return useMemo(() => {
+    const optional = verseFrom !== verseTo ? `-${verseTo}` : "";
     return `<strong>主日夕礼拝　18時・大礼拝堂</strong><br>
 交読詩編　${psalms}<br>
 説教　「${title}」　${paster}<br>
-聖書　${bible}<br>
+聖書　${bible}　${chapter}章${verseFrom}${optional}節<br>
 讃美歌　${song1}、${song2}`;
-  }, [title, paster, bible, psalms, song1, song2]);
+  }, [psalms, title, paster, bible, chapter, verseFrom, verseTo, song1, song2]);
 };
 
 export const useCombine = (

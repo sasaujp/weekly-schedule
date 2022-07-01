@@ -29,6 +29,7 @@ import {
 } from "../components/hooks/useHTML";
 import { PasterPicker } from "../components/PasterPicker";
 import { SongPicker } from "../components/SongPicker";
+import { BookNumberInput, BookSelector } from "../components/BookSelector";
 
 const WeekDays: { [key: number]: string } = {
   1: "月",
@@ -109,6 +110,9 @@ const Home: NextPage = () => {
   const [title, setTitle] = useState<string>("");
   const [paster, setPaster] = useState<string>("");
   const [bible, setBible] = useState<string>("");
+  const [chapter, setChapter] = useState<string>("");
+  const [verseFrom, setVerseFrom] = useState<string>("");
+  const [verseTo, setVerseTo] = useState<string>("");
   const [psalms, setPsalms] = useState<string>("");
   const [song1, setSong1] = useState<string>("");
   const [song2, setSong2] = useState<string>("");
@@ -117,6 +121,9 @@ const Home: NextPage = () => {
     title,
     paster,
     bible,
+    chapter,
+    verseFrom,
+    verseTo,
     psalms,
     song1,
     song2
@@ -124,6 +131,10 @@ const Home: NextPage = () => {
   const [title2, setTitle2] = useState<string>("");
   const [paster2, setPaster2] = useState<string>("");
   const [bible2, setBible2] = useState<string>("");
+  const [chapter2, setChapter2] = useState<string>("");
+  const [verseFrom2, setVerseFrom2] = useState<string>("");
+  const [verseTo2, setVerseTo2] = useState<string>("");
+
   const [song21, setSong21] = useState<string>("");
   const [song22, setSong22] = useState<string>("");
   const onChangeCheckbox = useCallback(
@@ -132,32 +143,31 @@ const Home: NextPage = () => {
         setTitle2(title);
         setPaster2(paster);
         setBible2(bible);
+        setChapter2(chapter);
+        setVerseFrom2(verseFrom);
+        setVerseTo2(verseTo);
         setSong21(song1);
         setSong22(song2);
       } else {
         setTitle2("");
         setPaster2("");
         setBible2("");
+        setChapter2("");
+        setVerseFrom2("");
+        setVerseTo2("");
         setSong21("");
         setSong22("");
       }
     },
-    [
-      bible,
-      paster,
-      setBible2,
-      setPaster2,
-      setSong21,
-      setSong22,
-      song1,
-      song2,
-      title,
-    ]
+    [bible, chapter, paster, song1, song2, title, verseFrom, verseTo]
   );
   const secondaryHTML = useSecondaryHTML(
     title2,
     paster2,
     bible2,
+    chapter2,
+    verseFrom2,
+    verseTo2,
     song21,
     song22
   );
@@ -165,6 +175,10 @@ const Home: NextPage = () => {
   const [title3, setTitle3] = useState<string>("");
   const [paster3, setPaster3] = useState<string>("");
   const [bible3, setBible3] = useState<string>("");
+  const [chapter3, setChapter3] = useState<string>("");
+  const [verseFrom3, setVerseFrom3] = useState<string>("");
+  const [verseTo3, setVerseTo3] = useState<string>("");
+
   const [song31, setSong31] = useState<string>("");
   const [song32, setSong32] = useState<string>("");
   const onChangeRadio = useCallback(
@@ -173,18 +187,27 @@ const Home: NextPage = () => {
         setTitle3("");
         setPaster3("");
         setBible3("");
+        setChapter3("");
+        setVerseFrom3("");
+        setVerseTo3("");
         setSong31("");
         setSong32("");
       } else if (e.target.value === "primary") {
         setTitle3(title);
         setPaster3(paster);
         setBible3(bible);
+        setChapter3(chapter);
+        setVerseFrom3(verseFrom);
+        setVerseTo3(verseTo);
         setSong31(song1);
         setSong32(song2);
       } else if (e.target.value === "secondary") {
         setTitle3(title2);
         setPaster3(paster2);
         setBible3(bible2);
+        setChapter3(chapter2);
+        setVerseFrom3(verseFrom2);
+        setVerseTo3(verseTo2);
         setSong31(song21);
         setSong32(song22);
       }
@@ -192,6 +215,8 @@ const Home: NextPage = () => {
     [
       bible,
       bible2,
+      chapter,
+      chapter2,
       paster,
       paster2,
       song1,
@@ -200,6 +225,10 @@ const Home: NextPage = () => {
       song22,
       title,
       title2,
+      verseFrom,
+      verseFrom2,
+      verseTo,
+      verseTo2,
     ]
   );
 
@@ -207,6 +236,9 @@ const Home: NextPage = () => {
     title3,
     paster3,
     bible3,
+    chapter3,
+    verseFrom3,
+    verseTo3,
     psalms,
     song31,
     song32
@@ -342,11 +374,14 @@ const Home: NextPage = () => {
                   onChange={setPaster}
                 />
                 <FormWrapper label="聖書箇所">
-                  <TextField
-                    value={bible}
-                    onChange={(e) => setBible(e.target.value)}
-                    fullWidth
-                    placeholder="創世記　27章18-29節"
+                  <BookSelector book={bible} onChange={setBible} />
+                  <BookNumberInput
+                    chapter={chapter}
+                    onChangeChapter={setChapter}
+                    verseFrom={verseFrom}
+                    onChangeVerseFrom={setVerseFrom}
+                    verseTo={verseTo}
+                    onChangeVerseTo={setVerseTo}
                   />
                 </FormWrapper>
                 <FormWrapper label="讃美歌1">
@@ -395,11 +430,14 @@ const Home: NextPage = () => {
                   onChange={setPaster2}
                 />
                 <FormWrapper label="聖書箇所">
-                  <TextField
-                    value={bible2}
-                    onChange={(e) => setBible2(e.target.value)}
-                    fullWidth
-                    placeholder="創世記　27章18-29節"
+                  <BookSelector book={bible2} onChange={setBible2} />
+                  <BookNumberInput
+                    chapter={chapter2}
+                    onChangeChapter={setChapter2}
+                    verseFrom={verseFrom2}
+                    onChangeVerseFrom={setVerseFrom2}
+                    verseTo={verseTo2}
+                    onChangeVerseTo={setVerseTo2}
                   />
                 </FormWrapper>
                 <FormWrapper label="讃美歌1">
@@ -466,11 +504,14 @@ const Home: NextPage = () => {
                   onChange={setPaster3}
                 />
                 <FormWrapper label="聖書箇所">
-                  <TextField
-                    value={bible3}
-                    onChange={(e) => setBible3(e.target.value)}
-                    fullWidth
-                    placeholder="創世記　27章18-29節"
+                  <BookSelector book={bible3} onChange={setBible3} />
+                  <BookNumberInput
+                    chapter={chapter3}
+                    onChangeChapter={setChapter3}
+                    verseFrom={verseFrom3}
+                    onChangeVerseFrom={setVerseFrom3}
+                    verseTo={verseTo3}
+                    onChangeVerseTo={setVerseTo3}
                   />
                 </FormWrapper>
                 <FormWrapper label="讃美歌1">
