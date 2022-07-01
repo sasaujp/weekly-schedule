@@ -95,32 +95,56 @@ export const useCombine = (
   }, [html1, html2, html3, isFirstSunday]);
 };
 
-export const useWeekDayHTML = (bible: string) => {
+export type BookType = {
+  book: string;
+  chapter: string;
+  verseFrom: string;
+  verseTo: string;
+};
+export const useWeekDayHTML = ({
+  book,
+  chapter,
+  verseFrom,
+  verseTo,
+}: BookType) => {
+  const optional = verseFrom !== verseTo ? `-${verseTo}` : "";
+
   return `<strong>正午礼拝</strong>　　12時15分・大礼拝堂<br>
-聖書　${bible}`;
+聖書　${book}　${chapter}章${verseFrom}${optional}節`;
 };
 
-export const useWednesdayHTML = (bible: string) => {
+export const useWednesdayHTML = ({
+  book,
+  chapter,
+  verseFrom,
+  verseTo,
+}: BookType) => {
   return useMemo(() => {
+    const optional = verseFrom !== verseTo ? `-${verseTo}` : "";
     return `<strong>オルガン・メディテーション</strong>　　12時15分・大礼拝堂<br>
-聖書　${bible}`;
-  }, [bible]);
+聖書　${book}　${chapter}章${verseFrom}${optional}節`;
+  }, [book, chapter, verseFrom, verseTo]);
 };
 
 export const useTuesdayHTML = (
-  bible: string,
-  study1: string,
+  bible: BookType,
+  study1: BookType,
   isTutorial: boolean,
   book: string,
   pageNumber: number
 ) => {
   return useMemo(() => {
+    const optional1 =
+      study1.verseFrom !== study1.verseTo ? `-${study1.verseTo}` : "";
+    const optional2 =
+      bible.verseFrom !== bible.verseTo ? `-${bible.verseTo}` : "";
+
     return `<strong>聖書講義</strong>　　－休会－<!--<a href="https://www.ginza-church.com/service/info/#kitou">　10時30分・小礼拝堂</a>--><br>
-「${study1}」<br>
+「${study1.book}　${study1.chapter}章${study1.verseFrom}${optional1}節」<br>
 <strong>祈祷会</strong>　　　－休会－<!--講義に引き続き11時30分まで--><br>
 <br>
 <strong>正午礼拝</strong>　　12時15分・大礼拝堂<br>
-聖書　${bible}${
+聖書　${bible.book}　${bible.chapter}章${bible.verseFrom}${optional2}節${
       isTutorial
         ? `<br>
 <br>
@@ -131,13 +155,18 @@ export const useTuesdayHTML = (
   }, [bible, study1, isTutorial, book, pageNumber]);
 };
 
-export const useThursdayHTML = (bible: string, study: string) => {
+export const useThursdayHTML = (bible: BookType, study: BookType) => {
   return useMemo(() => {
+    const optional1 =
+      bible.verseFrom !== bible.verseTo ? `-${bible.verseTo}` : "";
+    const optional2 =
+      study.verseFrom !== study.verseTo ? `-${study.verseTo}` : "";
+
     return `<strong>正午礼拝</strong>　　12時15分・大礼拝堂<br>
-聖書　${bible}<br>
+聖書　${bible.book}　${bible.chapter}章${bible.verseFrom}${optional1}節<br>
 <br>
 <strong>聖書講義</strong>　　－休会－<!--<a href="https://www.ginza-church.com/service/info/#kitou">　18時00分・小礼拝堂</a>--><br>
-「${study}」<br>
+「${study.book}　${study.chapter}章${study.verseFrom}${optional2}節」<br>
 <strong>祈祷会</strong>　　　－休会－<!--講義に引き続き19時00分まで-->`;
   }, [bible, study]);
 };

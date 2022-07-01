@@ -18,6 +18,7 @@ import type { NextPage } from "next";
 import React, { ReactNode, useCallback, useMemo, useState } from "react";
 import { add } from "date-fns";
 import {
+  BookType,
   useCombine,
   useEveningHTML,
   usePrimaryHTML,
@@ -269,16 +270,58 @@ const Home: NextPage = () => {
     setOpen(true);
   }, [value]);
 
-  const [weekday, setWeekday] = useState<{ [key: number]: string }>({
-    1: "",
-    2: "",
-    3: "",
-    4: "",
-    5: "",
-    6: "",
+  const [weekday, setWeekday] = useState<{
+    [key: number]: BookType;
+  }>({
+    1: {
+      book: "",
+      chapter: "",
+      verseFrom: "",
+      verseTo: "",
+    },
+    2: {
+      book: "",
+      chapter: "",
+      verseFrom: "",
+      verseTo: "",
+    },
+    3: {
+      book: "",
+      chapter: "",
+      verseFrom: "",
+      verseTo: "",
+    },
+    4: {
+      book: "",
+      chapter: "",
+      verseFrom: "",
+      verseTo: "",
+    },
+    5: {
+      book: "",
+      chapter: "",
+      verseFrom: "",
+      verseTo: "",
+    },
+    6: {
+      book: "",
+      chapter: "",
+      verseFrom: "",
+      verseTo: "",
+    },
   });
-  const [study1, setStudy1] = useState<string>("");
-  const [study2, setStudy2] = useState<string>("");
+  const [study1, setStudy1] = useState<BookType>({
+    book: "",
+    chapter: "",
+    verseFrom: "",
+    verseTo: "",
+  });
+  const [study2, setStudy2] = useState<BookType>({
+    book: "",
+    chapter: "",
+    verseFrom: "",
+    verseTo: "",
+  });
   const [book, setBook] = useState<string>("改めて学ぶ、教団信仰告白");
   const [bookPages, setBookPages] = useState<number>(0);
   const [open, setOpen] = React.useState(false);
@@ -548,7 +591,19 @@ const Home: NextPage = () => {
               <>
                 {dates.map((d, idx) => {
                   const v = weekday[d.getDay()];
-                  const onChange = (newValue: string) => {
+
+                  const onBeforeDay = () => {
+                    const value = { ...weekday[d.getDay() - 1] };
+                    value.verseTo = value.verseFrom = (
+                      parseInt(value.verseTo) + 1
+                    ).toString();
+                    setWeekday({
+                      ...weekday,
+                      ...{ [d.getDay()]: value },
+                    });
+                  };
+
+                  const onChange = (newValue: BookType) => {
                     setWeekday({ ...weekday, ...{ [d.getDay()]: newValue } });
                   };
                   return (
@@ -558,29 +613,76 @@ const Home: NextPage = () => {
                         WeekDays[d.getDay()]
                       })の聖書`}
                     >
-                      <TextField
-                        value={v}
-                        onChange={(e) => onChange(e.target.value)}
-                        fullWidth
-                        placeholder="創世記　27章18-29節"
+                      {idx !== 0 && (
+                        <Button variant="text" onClick={onBeforeDay}>
+                          前の日の続き
+                        </Button>
+                      )}
+                      <BookSelector
+                        book={v.book}
+                        onChange={(val) => {
+                          onChange({ ...v, book: val });
+                        }}
+                      />
+                      <BookNumberInput
+                        chapter={v.chapter}
+                        onChangeChapter={(val) => {
+                          onChange({ ...v, chapter: val });
+                        }}
+                        verseFrom={v.verseFrom}
+                        onChangeVerseFrom={(val) => {
+                          onChange({ ...v, verseFrom: val });
+                        }}
+                        verseTo={v.verseTo}
+                        onChangeVerseTo={(val) => {
+                          onChange({ ...v, verseTo: val });
+                        }}
                       />
                     </FormWrapper>
                   );
                 })}
                 <FormWrapper label="聖書講義(火)の聖書">
-                  <TextField
-                    value={study1}
-                    onChange={(e) => setStudy1(e.target.value)}
-                    fullWidth
-                    placeholder="創世記　27章18-29節"
+                  <BookSelector
+                    book={study1.book}
+                    onChange={(val) => {
+                      setStudy1({ ...study1, book: val });
+                    }}
+                  />
+                  <BookNumberInput
+                    chapter={study1.chapter}
+                    onChangeChapter={(val) => {
+                      setStudy1({ ...study1, chapter: val });
+                    }}
+                    verseFrom={study1.verseFrom}
+                    onChangeVerseFrom={(val) => {
+                      setStudy1({ ...study1, verseFrom: val });
+                    }}
+                    verseTo={study1.verseTo}
+                    onChangeVerseTo={(val) => {
+                      setStudy1({ ...study1, verseTo: val });
+                    }}
                   />
                 </FormWrapper>
                 <FormWrapper label="聖書講義(木)の聖書">
-                  <TextField
-                    value={study2}
-                    onChange={(e) => setStudy2(e.target.value)}
-                    fullWidth
-                    placeholder="創世記　27章18-29節"
+                  <BookSelector
+                    book={study2.book}
+                    onChange={(val) => {
+                      setStudy2({ ...study2, book: val });
+                    }}
+                  />
+                  <BookNumberInput
+                    chapter={study2.chapter}
+                    onChangeChapter={(val) => {
+                      setStudy2({ ...study2, chapter: val });
+                    }}
+                    verseFrom={study2.verseFrom}
+                    onChangeVerseFrom={(val) => {
+                      setStudy2({ ...study2, verseFrom: val });
+                    }}
+                    verseTo={study2.verseTo}
+                    onChangeVerseTo={(val) => {
+                      setStudy2({ ...study2, verseTo: val });
+                    }}
                   />
                 </FormWrapper>
                 {isFirstOrThirdTuesday && (
