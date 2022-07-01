@@ -44,10 +44,23 @@ const SectionWrapper: React.FC<{ label: string; children?: ReactNode }> = ({
   label,
   children,
 }) => {
+  const [hidden, setHideen] = useState(false);
+  const onChangeCheckbox = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setHideen(e.target.checked);
+    },
+    []
+  );
   return (
     <Card sx={{ marginTop: "16px", padding: "16px" }}>
       <Typography variant="h6">{label}</Typography>
-      <Box sx={{ paddingLeft: "16px" }}>{children}</Box>
+      <FormGroup>
+        <FormControlLabel
+          control={<Checkbox onChange={onChangeCheckbox} />}
+          label="隠す"
+        />
+      </FormGroup>
+      {!hidden && <Box sx={{ paddingLeft: "16px" }}>{children}</Box>}
     </Card>
   );
 };
@@ -107,6 +120,7 @@ const Home: NextPage = () => {
     const date = tuesday.getDate();
     return date <= 7 || (date >= 15 && date <= 21);
   }, [dates]);
+
   const [url, setUrl] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [paster, setPaster] = useState<string>("");
