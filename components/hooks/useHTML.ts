@@ -131,7 +131,7 @@ export const useTuesdayHTML = (
   study1: BookType,
   isTutorial: boolean,
   book: string,
-  pageNumber: number
+  pageNumber: string
 ) => {
   return useMemo(() => {
     const optional1 =
