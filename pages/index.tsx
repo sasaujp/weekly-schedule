@@ -75,6 +75,49 @@ const study2State = atom<BookType>({
   effects_UNSTABLE: [persistAtom],
 });
 
+const weekdayState = atom<{ [key: number]: BookType }>({
+  key: "weekdayState",
+  default: {
+    1: {
+      book: "",
+      chapter: "",
+      verseFrom: "",
+      verseTo: "",
+    },
+    2: {
+      book: "",
+      chapter: "",
+      verseFrom: "",
+      verseTo: "",
+    },
+    3: {
+      book: "",
+      chapter: "",
+      verseFrom: "",
+      verseTo: "",
+    },
+    4: {
+      book: "",
+      chapter: "",
+      verseFrom: "",
+      verseTo: "",
+    },
+    5: {
+      book: "",
+      chapter: "",
+      verseFrom: "",
+      verseTo: "",
+    },
+    6: {
+      book: "",
+      chapter: "",
+      verseFrom: "",
+      verseTo: "",
+    },
+  },
+  effects_UNSTABLE: [persistAtom],
+});
+
 const WeekDays: { [key: number]: string } = {
   1: "月",
   2: "火",
@@ -328,46 +371,7 @@ const Home: NextPage = () => {
     setOpen(true);
   }, [value]);
 
-  const [weekday, setWeekday] = useState<{
-    [key: number]: BookType;
-  }>({
-    1: {
-      book: "",
-      chapter: "",
-      verseFrom: "",
-      verseTo: "",
-    },
-    2: {
-      book: "",
-      chapter: "",
-      verseFrom: "",
-      verseTo: "",
-    },
-    3: {
-      book: "",
-      chapter: "",
-      verseFrom: "",
-      verseTo: "",
-    },
-    4: {
-      book: "",
-      chapter: "",
-      verseFrom: "",
-      verseTo: "",
-    },
-    5: {
-      book: "",
-      chapter: "",
-      verseFrom: "",
-      verseTo: "",
-    },
-    6: {
-      book: "",
-      chapter: "",
-      verseFrom: "",
-      verseTo: "",
-    },
-  });
+  const [weekday, setWeekday] = useRecoilState(weekdayState);
   const [study1, setStudy1] = useRecoilState(study1State);
   const [study2, setStudy2] = useRecoilState(study2State);
   const [book, setBook] = useRecoilState(tutorialBookState);
