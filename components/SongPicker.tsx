@@ -1,13 +1,8 @@
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material";
+import { Autocomplete, TextField, SelectChangeEvent } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 
 const SONGS = [
+  "",
   "1（神のちからを）",
   "2（いざやともに）",
   "3（あめつちのみ神をば）",
@@ -832,59 +827,30 @@ const SONGS = [
 
 export const SongPicker: React.FC<{
   id: string;
-  value: string;
+  // value: string;
   onChange: (val: string) => void;
-}> = ({ id, onChange, value }) => {
-  useEffect(() => {
-    const elements = SONGS.map((v) => (
-      <MenuItem key={v} value={v}>
-        {v}
-      </MenuItem>
-    ));
-    setElm(elements);
-  }, []);
+}> = ({ id, onChange }) => {
+  const [value, setValue] = useState("");
   const _onChange = useCallback(
-    (e: SelectChangeEvent<string>) => {
-      onChange(e.target.value);
+    (_: unknown, val: string | null) => {
+      onChange(val ?? "");
+      setValue(val ?? "");
     },
     [onChange]
   );
-  const [elm, setElm] = useState<JSX.Element[] | null>(null);
-  const onOpen = useCallback(() => {
-    setElm(null);
-    const func = () => {
-      const elements = SONGS.map((v) => (
-        <MenuItem key={v} value={v}>
-          {v}
-        </MenuItem>
-      ));
-      setElm(elements);
-    };
-    setTimeout(func, 50);
-  }, []);
 
   return (
-    <FormControl
+    <Autocomplete
+      value={value}
+      onChange={_onChange}
+      disablePortal
+      id={id}
+      options={SONGS}
       fullWidth
-      sx={{
-        marginTop: "16px",
-        marginBottom: "16px",
-      }}
-    >
-      <InputLabel id={`${id}-label`}>讃美歌</InputLabel>
-      <Select
-        id={id}
-        label="Song"
-        labelId={`${id}-label`}
-        onChange={_onChange}
-        onOpen={onOpen}
-        value={value}
-        MenuProps={{
-          PaperProps: { sx: { maxHeight: 400 } },
-        }}
-      >
-        {elm}
-      </Select>
-    </FormControl>
+      sx={{ marginTop: "16px", marginBottom: "16px", width: 300 }}
+      renderInput={(params) => (
+        <TextField {...params} fullWidth label="賛美歌" />
+      )}
+    />
   );
 };

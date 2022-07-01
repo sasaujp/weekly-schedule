@@ -79,7 +79,7 @@ export const BookSelector: React.FC<{
   onChange: (value: string) => void;
 }> = ({ book, onChange }) => {
   const _onChange = useCallback(
-    (e: unknown, val: string | null) => {
+    (_: unknown, val: string | null) => {
       onChange(val ?? "");
     },
     [onChange]

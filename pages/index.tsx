@@ -442,11 +442,7 @@ const Home: NextPage = () => {
                   />
                 </FormWrapper>
                 <FormWrapper label="讃美歌1">
-                  <SongPicker
-                    value={song1}
-                    id="song1"
-                    onChange={(val) => setSong1(val)}
-                  />
+                  <SongPicker id="song1" onChange={(val) => setSong1(val)} />
                   <TextField
                     value={song1}
                     onChange={(e) => setSong1(e.target.value)}
@@ -454,11 +450,7 @@ const Home: NextPage = () => {
                   />
                 </FormWrapper>
                 <FormWrapper label="讃美歌2">
-                  <SongPicker
-                    value={song2}
-                    id="song2"
-                    onChange={(val) => setSong2(val)}
-                  />
+                  <SongPicker id="song2" onChange={(val) => setSong2(val)} />
                   <TextField
                     value={song2}
                     onChange={(e) => setSong2(e.target.value)}
@@ -498,11 +490,7 @@ const Home: NextPage = () => {
                   />
                 </FormWrapper>
                 <FormWrapper label="讃美歌1">
-                  <SongPicker
-                    value={song21}
-                    id="song2"
-                    onChange={(val) => setSong21(val)}
-                  />
+                  <SongPicker id="song2" onChange={(val) => setSong21(val)} />
                   <TextField
                     value={song21}
                     onChange={(e) => setSong21(e.target.value)}
@@ -511,11 +499,7 @@ const Home: NextPage = () => {
                   />
                 </FormWrapper>
                 <FormWrapper label="讃美歌2">
-                  <SongPicker
-                    value={song22}
-                    id="song2"
-                    onChange={(val) => setSong22(val)}
-                  />
+                  <SongPicker id="song2" onChange={(val) => setSong22(val)} />
                   <TextField
                     value={song22}
                     onChange={(e) => setSong22(e.target.value)}
@@ -572,11 +556,7 @@ const Home: NextPage = () => {
                   />
                 </FormWrapper>
                 <FormWrapper label="讃美歌1">
-                  <SongPicker
-                    value={song31}
-                    id="song2"
-                    onChange={(val) => setSong31(val)}
-                  />
+                  <SongPicker id="song2" onChange={(val) => setSong31(val)} />
                   <TextField
                     value={song31}
                     onChange={(e) => setSong31(e.target.value)}
@@ -585,11 +565,7 @@ const Home: NextPage = () => {
                   />
                 </FormWrapper>
                 <FormWrapper label="讃美歌2">
-                  <SongPicker
-                    value={song32}
-                    id="song2"
-                    onChange={(val) => setSong32(val)}
-                  />
+                  <SongPicker id="song2" onChange={(val) => setSong32(val)} />
                   <TextField
                     value={song32}
                     onChange={(e) => setSong32(e.target.value)}
