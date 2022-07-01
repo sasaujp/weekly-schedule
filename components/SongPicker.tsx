@@ -1,5 +1,5 @@
-import { Autocomplete, TextField, SelectChangeEvent } from "@mui/material";
-import React, { useCallback, useEffect, useState } from "react";
+import { Autocomplete, TextField } from "@mui/material";
+import React, { useCallback, useState } from "react";
 
 const SONGS = [
   "",

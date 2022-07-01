@@ -133,16 +133,6 @@ export const BookNumberInput: React.FC<{
     [onChangeVerseTo]
   );
 
-  useEffect(() => {
-    if (!verseFrom && !verseTo) {
-      return;
-    }
-    const from = parseInt(verseFrom);
-    const to = parseInt(verseTo);
-    if (isNaN(to) || to < from) {
-      onChangeVerseTo(verseFrom);
-    }
-  }, [onChangeVerseTo, verseFrom, verseTo]);
   return (
     <Stack
       direction="row"
