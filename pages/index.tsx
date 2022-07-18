@@ -31,92 +31,8 @@ import {
 import { PasterPicker } from "../components/PasterPicker";
 import { SongPicker } from "../components/SongPicker";
 import { BookNumberInput, BookSelector } from "../components/BookSelector";
-import { atom, useRecoilState } from "recoil";
-import { recoilPersist } from "recoil-persist";
-const { persistAtom } = recoilPersist();
-
-const psalmsState = atom<string>({
-  key: "psalms",
-  default: "",
-  effects_UNSTABLE: [persistAtom],
-});
-
-const tutorialBookState = atom<string>({
-  key: "tutorialBook",
-  default: "改めて学ぶ、教団信仰告白",
-  effects_UNSTABLE: [persistAtom],
-});
-
-const tutorialBookPageState = atom<string>({
-  key: "tutorialBookPage",
-  default: "0",
-  effects_UNSTABLE: [persistAtom],
-});
-
-const study1State = atom<BookType>({
-  key: "study1State",
-  default: {
-    book: "",
-    chapter: "",
-    verseFrom: "",
-    verseTo: "",
-  },
-  effects_UNSTABLE: [persistAtom],
-});
-
-const study2State = atom<BookType>({
-  key: "study2State",
-  default: {
-    book: "",
-    chapter: "",
-    verseFrom: "",
-    verseTo: "",
-  },
-  effects_UNSTABLE: [persistAtom],
-});
-
-const weekdayState = atom<{ [key: number]: BookType }>({
-  key: "weekdayState",
-  default: {
-    1: {
-      book: "",
-      chapter: "",
-      verseFrom: "",
-      verseTo: "",
-    },
-    2: {
-      book: "",
-      chapter: "",
-      verseFrom: "",
-      verseTo: "",
-    },
-    3: {
-      book: "",
-      chapter: "",
-      verseFrom: "",
-      verseTo: "",
-    },
-    4: {
-      book: "",
-      chapter: "",
-      verseFrom: "",
-      verseTo: "",
-    },
-    5: {
-      book: "",
-      chapter: "",
-      verseFrom: "",
-      verseTo: "",
-    },
-    6: {
-      book: "",
-      chapter: "",
-      verseFrom: "",
-      verseTo: "",
-    },
-  },
-  effects_UNSTABLE: [persistAtom],
-});
+import { useRecoilState } from "recoil";
+import * as inputs from "../components/InputValues";
 
 const WeekDays: { [key: number]: string } = {
   1: "月",
@@ -126,6 +42,7 @@ const WeekDays: { [key: number]: string } = {
   5: "金",
   6: "土",
 };
+
 const SectionWrapper: React.FC<{ label: string; children?: ReactNode }> = ({
   label,
   children,
@@ -207,17 +124,17 @@ const Home: NextPage = () => {
     return date <= 7 || (date >= 15 && date <= 21);
   }, [dates]);
 
-  const [url, setUrl] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [paster, setPaster] = useState<string>("");
-  const [bible, setBible] = useState<string>("");
-  const [chapter, setChapter] = useState<string>("");
-  const [verseFrom, setVerseFrom] = useState<string>("");
-  const [verseTo, setVerseTo] = useState<string>("");
-  const [psalms, setPsalms] = useRecoilState(psalmsState);
-  useState<string>("");
-  const [song1, setSong1] = useState<string>("");
-  const [song2, setSong2] = useState<string>("");
+  const [url, setUrl] = useRecoilState(inputs.urlState);
+  const [title, setTitle] = useRecoilState(inputs.titleState);
+  const [paster, setPaster] = useRecoilState(inputs.pasterState);
+  const [bible, setBible] = useRecoilState(inputs.bibleState);
+  const [chapter, setChapter] = useRecoilState(inputs.chapterState);
+  const [verseFrom, setVerseFrom] = useRecoilState(inputs.verseFromState);
+  const [verseTo, setVerseTo] = useRecoilState(inputs.verseToState);
+  const [psalms, setPsalms] = useRecoilState(inputs.psalmsState);
+  const [song1, setSong1] = useRecoilState(inputs.song1State);
+  const [song2, setSong2] = useRecoilState(inputs.song2State);
+
   const primaryHTML = usePrimaryHTML(
     url,
     title,
@@ -371,11 +288,13 @@ const Home: NextPage = () => {
     setOpen(true);
   }, [value]);
 
-  const [weekday, setWeekday] = useRecoilState(weekdayState);
-  const [study1, setStudy1] = useRecoilState(study1State);
-  const [study2, setStudy2] = useRecoilState(study2State);
-  const [book, setBook] = useRecoilState(tutorialBookState);
-  const [bookPages, setBookPages] = useRecoilState(tutorialBookPageState);
+  const [weekday, setWeekday] = useRecoilState(inputs.weekdayState);
+  const [study1, setStudy1] = useRecoilState(inputs.study1State);
+  const [study2, setStudy2] = useRecoilState(inputs.study2State);
+  const [book, setBook] = useRecoilState(inputs.tutorialBookState);
+  const [bookPages, setBookPages] = useRecoilState(
+    inputs.tutorialBookPageState
+  );
   const [open, setOpen] = React.useState(false);
   const [notice, setNotice] = React.useState("");
 
