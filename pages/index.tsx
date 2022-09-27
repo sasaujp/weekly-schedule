@@ -25,7 +25,7 @@ import {
 import { BookNumberInput, BookSelector } from "../components/BookSelector";
 import { useRecoilState } from "recoil";
 import * as inputs from "../components/InputValues";
-import { useSundayProgram } from "../components/sundayProgram";
+import { useSundayProgram } from "../components/SundayProgram";
 import { FormWrapper, SectionWrapper } from "../components/misc";
 
 const WeekDays: { [key: number]: string } = {
