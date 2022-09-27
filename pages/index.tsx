@@ -13,13 +13,7 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import type { NextPage } from "next";
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { add } from "date-fns";
 import {
   BookType,
@@ -32,6 +26,7 @@ import { BookNumberInput, BookSelector } from "../components/BookSelector";
 import { useRecoilState } from "recoil";
 import * as inputs from "../components/InputValues";
 import { useSundayProgram } from "../components/sundayProgram";
+import { FormWrapper, SectionWrapper } from "../components/misc";
 
 const WeekDays: { [key: number]: string } = {
   1: "月",
@@ -40,30 +35,6 @@ const WeekDays: { [key: number]: string } = {
   4: "木",
   5: "金",
   6: "土",
-};
-
-export const SectionWrapper: React.FC<{
-  label: string;
-  children?: ReactNode;
-}> = ({ label, children }) => {
-  return (
-    <Card sx={{ marginTop: "16px", padding: "16px" }}>
-      <Typography variant="h6">{label}</Typography>
-      {<Box sx={{ paddingLeft: "16px" }}>{children}</Box>}
-    </Card>
-  );
-};
-
-export const FormWrapper: React.FC<{ label: string; children?: ReactNode }> = ({
-  label,
-  children,
-}) => {
-  return (
-    <Box marginTop="16px">
-      <Typography>{label}</Typography>
-      {children}
-    </Box>
-  );
 };
 
 const Home: NextPage = () => {

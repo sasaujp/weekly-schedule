@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import React, { useCallback, useMemo } from "react";
 import { useRecoilState } from "recoil";
-import { FormWrapper, SectionWrapper } from "../pages";
 import { BookNumberInput, BookSelector } from "./BookSelector";
 import {
   useCombine,
@@ -20,6 +19,7 @@ import {
   useSecondaryHTML,
 } from "./hooks/useHTML";
 import { SundayType } from "./InputValues";
+import { FormWrapper, SectionWrapper } from "./misc";
 import { PasterPicker } from "./PasterPicker";
 import { SongPicker } from "./SongPicker";
 
