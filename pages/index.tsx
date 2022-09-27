@@ -81,22 +81,22 @@ const Home: NextPage = () => {
     }
     return [
       add(value, {
-        days: -6,
+        days: 1,
       }),
       add(value, {
-        days: -5,
+        days: 2,
       }),
       add(value, {
-        days: -4,
+        days: 3,
       }),
       add(value, {
-        days: -3,
+        days: 4,
       }),
       add(value, {
-        days: -2,
+        days: 5,
       }),
       add(value, {
-        days: -1,
+        days: 6,
       }),
     ];
   }, [value]);
