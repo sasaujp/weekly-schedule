@@ -240,7 +240,11 @@ export const useSundayProgram = (
     eveningHTML,
     isFirstSunday
   );
-
+  const onCopyKyoukarireki = useCallback(() => {
+    navigator.clipboard.writeText(kyoukaireki);
+    setNotice("教会歴");
+    setOpen(true);
+  }, [kyoukaireki, setNotice, setOpen]);
   const onCopySundayProgram = useCallback(() => {
     navigator.clipboard.writeText(html);
     setNotice("日曜日のプログラム");
@@ -530,7 +534,7 @@ export const useSundayProgram = (
         </Card>
         <Card sx={{ marginTop: "16px", padding: "16px" }}>
           <p>{kyoukaireki}</p>
-          <Button variant="contained" onClick={onCopySundayProgram}>
+          <Button variant="contained" onClick={onCopyKyoukarireki}>
             教会歴をコピーする
           </Button>
         </Card>
@@ -546,7 +550,14 @@ export const useSundayProgram = (
         </Card>
       </>
     );
-  }, [day, html, kyoukaireki, onCopySunday, onCopySundayProgram]);
+  }, [
+    day,
+    html,
+    kyoukaireki,
+    onCopyKyoukarireki,
+    onCopySunday,
+    onCopySundayProgram,
+  ]);
   const setValues = useCallback(
     (values: Values) => {
       const {
