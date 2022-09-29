@@ -88,6 +88,7 @@ export const weekdayState = atom<{ [key: number]: BookType }>({
 });
 
 export type SundayType = {
+  weekNoState: RecoilState<number>;
   kyoukairekiState: RecoilState<string>;
   psalmsState: RecoilState<string>;
   urlState: RecoilState<string>;
@@ -118,6 +119,11 @@ export type SundayType = {
 };
 
 const makeSundayProguramState = (prefix: string): SundayType => {
+  const weekNoState = atom<number>({
+    key: prefix + "weekNo",
+    default: 0,
+    effects_UNSTABLE: [persistAtom],
+  });
   const kyoukairekiState = atom<string>({
     key: prefix + "kyoukaireki",
     default: "",
@@ -282,6 +288,7 @@ const makeSundayProguramState = (prefix: string): SundayType => {
   });
 
   return {
+    weekNoState,
     kyoukairekiState,
     psalmsState,
     urlState,

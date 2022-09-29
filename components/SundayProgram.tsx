@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { setWeek } from "date-fns";
 import React, { useCallback, useMemo } from "react";
 import { useRecoilState } from "recoil";
 import { BookNumberInput, BookSelector } from "./BookSelector";
@@ -24,6 +25,7 @@ import { PasterPicker } from "./PasterPicker";
 import { SongPicker } from "./SongPicker";
 
 export type Values = {
+  weekNo: number;
   kyoukaireki: string;
   url: string;
   title: string;
@@ -64,6 +66,7 @@ export const useSundayProgram = (
   values: Values;
   setValues: (values: Values) => void;
 } => {
+  const [weekNo, setWeekNo] = useRecoilState(sunday.weekNoState);
   const [kyoukaireki, setKyoukaireki] = useRecoilState(sunday.kyoukairekiState);
   const [url, setUrl] = useRecoilState(sunday.urlState);
   const [title, setTitle] = useRecoilState(sunday.titleState);
@@ -240,6 +243,12 @@ export const useSundayProgram = (
     eveningHTML,
     isFirstSunday
   );
+  const onCopyWeekNo = useCallback(() => {
+    navigator.clipboard.writeText("Week" + weekNo);
+    setNotice("Week");
+    setOpen(true);
+  }, [setNotice, setOpen, weekNo]);
+
   const onCopyKyoukarireki = useCallback(() => {
     navigator.clipboard.writeText(kyoukaireki);
     setNotice("教会歴");
@@ -259,6 +268,15 @@ export const useSundayProgram = (
         label={`${day.getMonth() + 1}/${day.getDate()}(日)の内容`}
       >
         {isFirstSunday && <Typography>第一日曜日です</Typography>}
+        <FormWrapper label="Week">
+          <TextField
+            fullWidth
+            type="number"
+            placeholder="40"
+            value={weekNo}
+            onChange={(e) => setWeekNo(Number(e.target.value))}
+          />
+        </FormWrapper>
 
         <FormWrapper label="教会歴">
           <TextField
@@ -487,6 +505,7 @@ export const useSundayProgram = (
     setVerseTo,
     setVerseTo2,
     setVerseTo3,
+    setWeekNo,
     song1,
     song2,
     song21,
@@ -503,6 +522,7 @@ export const useSundayProgram = (
     verseTo,
     verseTo2,
     verseTo3,
+    weekNo,
   ]);
 
   const onCopySunday = useCallback(() => {
@@ -533,6 +553,12 @@ export const useSundayProgram = (
           </Button>
         </Card>
         <Card sx={{ marginTop: "16px", padding: "16px" }}>
+          <p>Week{weekNo}</p>
+          <Button variant="contained" onClick={onCopyWeekNo}>
+            Weekをコピーする
+          </Button>
+        </Card>
+        <Card sx={{ marginTop: "16px", padding: "16px" }}>
           <p>{kyoukaireki}</p>
           <Button variant="contained" onClick={onCopyKyoukarireki}>
             教会歴をコピーする
@@ -557,10 +583,13 @@ export const useSundayProgram = (
     onCopyKyoukarireki,
     onCopySunday,
     onCopySundayProgram,
+    onCopyWeekNo,
+    weekNo,
   ]);
   const setValues = useCallback(
     (values: Values) => {
       const {
+        weekNo,
         kyoukaireki,
         url,
         title,
@@ -589,6 +618,7 @@ export const useSundayProgram = (
         song31,
         song32,
       } = values;
+      setWeekNo(weekNo);
       setKyoukaireki(kyoukaireki);
       setUrl(url);
       setTitle(title);
@@ -618,33 +648,34 @@ export const useSundayProgram = (
       setSong32(song32);
     },
     [
-      setBible,
-      setBible2,
-      setBible3,
-      setChapter,
-      setChapter2,
-      setChapter3,
+      setWeekNo,
       setKyoukaireki,
+      setUrl,
+      setTitle,
       setPaster,
-      setPaster2,
-      setPaster3,
+      setBible,
+      setChapter,
+      setVerseFrom,
+      setVerseTo,
       setPsalms,
       setSong1,
       setSong2,
+      setTitle2,
+      setPaster2,
+      setBible2,
+      setChapter2,
+      setVerseFrom2,
+      setVerseTo2,
       setSong21,
       setSong22,
+      setTitle3,
+      setPaster3,
+      setBible3,
+      setChapter3,
+      setVerseFrom3,
+      setVerseTo3,
       setSong31,
       setSong32,
-      setTitle,
-      setTitle2,
-      setTitle3,
-      setUrl,
-      setVerseFrom,
-      setVerseFrom2,
-      setVerseFrom3,
-      setVerseTo,
-      setVerseTo2,
-      setVerseTo3,
     ]
   );
 
@@ -652,6 +683,7 @@ export const useSundayProgram = (
     form,
     copy,
     values: {
+      weekNo,
       kyoukaireki,
       url,
       title,
