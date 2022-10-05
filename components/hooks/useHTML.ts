@@ -10,11 +10,18 @@ export const usePrimaryHTML = (
   verseTo: string,
   psalms: string,
   song1: string,
-  song2: string
+  song2: string,
+  isFourth: boolean
 ) => {
   return useMemo(() => {
     const optional = verseFrom !== verseTo ? `-${verseTo}` : "";
-    return `<strong>教会学校　　9時・大礼拝堂<a href="https://www.ginza-church.com/cs/top/">（インターネット配信・家庭礼拝）</a></strong><br>
+    const cs = isFourth
+      ? `<strong>教会学校　　9時・大礼拝堂<a href="https://www.ginza-church.com/cs/top/">（インターネット配信・家庭礼拝）</a></strong>`
+      : `<strong>教会学校　　9時</strong><br>
+    幼稚科・小学科　<strong>大礼拝堂<a href="https://www.ginza-church.com/cs/top/">（インターネット配信・家庭礼拝）</a></strong><br>
+    ジュニア科　<strong>1階福音会センター</strong>`;
+
+    return `${cs}<br>
 <br>
 <strong>主日礼拝　　10時30分・大礼拝堂<a href="${url}" target=" rel=" rel="noopener noreferrer">（インターネット配信・家庭礼拝）</a></strong><br>
 交読詩編　${psalms}<br>
@@ -32,6 +39,7 @@ export const usePrimaryHTML = (
     psalms,
     song1,
     song2,
+    isFourth,
   ]);
 };
 
@@ -139,9 +147,9 @@ export const useTuesdayHTML = (
     const optional2 =
       bible.verseFrom !== bible.verseTo ? `-${bible.verseTo}` : "";
 
-    return `<strong>聖書講義</strong>　　－休会－<!--<a href="https://www.ginza-church.com/service/info/#kitou">　10時30分・小礼拝堂</a>--><br>
+    return `<strong>聖書講義</strong>　　<!--－休会－--><a href="https://www.ginza-church.com/service/info/#kitou">10時30分・小礼拝堂</a><br>
 「${study1.book}　${study1.chapter}章${study1.verseFrom}${optional1}節」<br>
-<strong>祈祷会</strong>　　　－休会－<!--講義に引き続き11時30分まで--><br>
+<strong>祈祷会</strong>　　　<!--－休会－-->講義に引き続き11時30分まで<br>
 <br>
 <strong>正午礼拝</strong>　　12時15分・大礼拝堂<br>
 聖書　${bible.book}　${bible.chapter}章${bible.verseFrom}${optional2}節${

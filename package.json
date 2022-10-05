@@ -25,6 +25,7 @@
     "recoil-persist": "^4.2.0"
   },
   "devDependencies": {
+    "@types/next-auth": "^3.15.0",
     "@types/node": "^18.0.0",
     "@types/react": "18.0.14",
     "eslint": "8.18.0",

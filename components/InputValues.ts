@@ -4,6 +4,24 @@ import { BookType } from "./hooks/useHTML";
 
 const { persistAtom } = recoilPersist();
 
+export const youtubeApiKeyState = atom<string>({
+  key: "youtube-apikey",
+  default: "",
+  effects_UNSTABLE: [persistAtom],
+});
+
+export const youtubeClientIdState = atom<string>({
+  key: "youtube-clientid",
+  default: "",
+  effects_UNSTABLE: [persistAtom],
+});
+
+export const youtubeClientSecretState = atom<string>({
+  key: "youtube-clientsecret",
+  default: "",
+  effects_UNSTABLE: [persistAtom],
+});
+
 export const dateState = atom<Date | null>({
   key: "date",
   default: null,

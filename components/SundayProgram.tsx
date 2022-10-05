@@ -22,6 +22,7 @@ import { SundayType } from "./InputValues";
 import { FormWrapper, SectionWrapper } from "./misc";
 import { PasterPicker } from "./PasterPicker";
 import { SongPicker } from "./SongPicker";
+import { useStream } from "./Stream";
 
 export type Values = {
   weekNo: number;
@@ -65,6 +66,8 @@ export const useSundayProgram = (
   values: Values;
   setValues: (values: Values) => void;
 } => {
+  const stream = useStream();
+
   const [weekNo, setWeekNo] = useRecoilState(sunday.weekNoState);
   const [kyoukaireki, setKyoukaireki] = useRecoilState(sunday.kyoukairekiState);
   const [url, setUrl] = useRecoilState(sunday.urlState);
@@ -144,6 +147,13 @@ export const useSundayProgram = (
     return day.getDate() <= 7;
   }, [day]);
 
+  const isFourSunday = useMemo(() => {
+    if (!day || day.getDay() !== 0) {
+      return false;
+    }
+    return day.getDate() >= 22 && day.getDate() <= 28;
+  }, [day]);
+
   const onChangeRadio = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.value === "none") {
@@ -212,7 +222,8 @@ export const useSundayProgram = (
     verseTo,
     psalms,
     song1,
-    song2
+    song2,
+    isFourSunday
   );
   const secondaryHTML = useSecondaryHTML(
     title2,
@@ -286,6 +297,7 @@ export const useSundayProgram = (
           />
         </FormWrapper>
         <SectionWrapper label="朝礼拝の内容">
+          <Button onClick={stream.handleOpen}>配信URL生成</Button>
           <FormWrapper label="配信URL">
             <TextField
               value={url}
@@ -459,6 +471,7 @@ export const useSundayProgram = (
             />
           </FormWrapper>
         </SectionWrapper>
+        {stream.body}
       </SectionWrapper>
     );
   }, [
@@ -511,6 +524,8 @@ export const useSundayProgram = (
     song22,
     song31,
     song32,
+    stream.body,
+    stream.handleOpen,
     title,
     title2,
     title3,
