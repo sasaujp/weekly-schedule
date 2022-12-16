@@ -20,7 +20,8 @@ import {
 } from "./InputValues";
 import { atom, RecoilState, useRecoilState } from "recoil";
 import { FormWrapper } from "./misc";
-import { isBefore } from "date-fns";
+import { isBefore, add } from "date-fns";
+import { BookType } from "./hooks/useHTML";
 
 const style = {
   position: "absolute" as "absolute",
@@ -297,19 +298,6 @@ export const useApiKey = () => {
     setOpen(false);
   }, []);
 
-  const signIn = useCallback(async () => {
-    const client = google.accounts.oauth2.initTokenClient({
-      client_id:
-        "347509936536-ip5sqj72ubsbsenmajahchsl6bjddc6e.apps.googleusercontent.com",
-      callback: (resp) => {
-        console.log("response", resp);
-        setCredential(resp.access_token);
-      },
-      scope: "https://www.googleapis.com/auth/youtube.force-ssl",
-    });
-    client.requestAccessToken();
-  }, [setCredential]);
-
   const body = useMemo(() => {
     return (
       <Modal
@@ -330,6 +318,192 @@ export const useApiKey = () => {
       </Modal>
     );
   }, [apiKey, handleClose, open, setApiKey]);
+
+  return {
+    handleOpen,
+    body,
+  };
+};
+
+const makeDateString = (day: Date) => {
+  const dateTitle = `${day.getFullYear()}/${
+    day.getMonth() + 1
+  }/${day.getDate()}`;
+  const dateData = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(day.getDate()).padStart(2, "0")}`;
+  return [dateTitle, dateData];
+};
+
+const makeBookString = ({ book, chapter, verseFrom, verseTo }: BookType) => {
+  return `聖書  ${book}${chapter}章${verseFrom}～${verseTo}節`;
+};
+
+export const useWeekdayStream = (
+  day1: Date,
+  day2: Date,
+  book1: BookType,
+  book2: BookType,
+  tuesdayUrlState: RecoilState<StreamingUrlType>,
+  thursdayUrlState: RecoilState<StreamingUrlType>
+) => {
+  const [progressing, setProgressing] = useState(false);
+  const [credential, setCredential] = useRecoilState(credentialState);
+  const [open, setOpen] = useState(false);
+  const [apiKey] = useRecoilState(youtubeApiKeyState);
+  const [tuesdayUrl, setTuesdayUrl] = useRecoilState(tuesdayUrlState);
+  const [thursdayUrl, setThursdayUrl] = useRecoilState(thursdayUrlState);
+
+  const handleOpen = useCallback(() => {
+    setOpen(true);
+  }, []);
+  const handleClose = useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  const signIn = useCallback(async () => {
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id:
+        "347509936536-ip5sqj72ubsbsenmajahchsl6bjddc6e.apps.googleusercontent.com",
+      callback: (resp) => {
+        console.log("response", resp);
+        setCredential(resp.access_token);
+      },
+      scope: "https://www.googleapis.com/auth/youtube.force-ssl",
+    });
+    client.requestAccessToken();
+  }, [setCredential]);
+
+  const create = useCallback(async () => {
+    setProgressing(true);
+    if (apiKey.length && credential.length) {
+      const values = [
+        {
+          day: day1,
+          time: "10:30",
+          description: `${makeBookString(
+            book1
+          )}\n　　　　　　　　　　　　髙橋　潤　牧師`,
+          setter: setTuesdayUrl,
+        },
+        {
+          day: day2,
+          time: "18:00",
+          description: `${makeBookString(
+            book2
+          )}\n　　　　　　　　　　　　山森　風花　伝道師`,
+          setter: setThursdayUrl,
+        },
+      ];
+      for (const { day, description, time, setter } of values) {
+        const [dateTitle, dateData] = makeDateString(day);
+        const resp = await axios.post(
+          `https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&part=status&key=${apiKey}`,
+          JSON.stringify({
+            snippet: {
+              title: `銀座教会聖書講義祈祷会(${dateTitle} ${time}~)`,
+              description: description,
+              scheduledStartTime: `${dateData}T${time}:00+09:00`,
+              isDefaultBroadcast: false,
+            },
+            status: {
+              privacyStatus: "unlisted",
+              selfDeclaredMadeForKids: false,
+            },
+          }),
+          {
+            headers: {
+              Authorization: `Bearer ${credential}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const id = resp.data["id"];
+        setter({
+          url: `https://youtube.com/live/${id}?feature=share`,
+          date: dateTitle,
+        });
+      }
+      setProgressing(false);
+    }
+  }, [
+    apiKey,
+    book1,
+    book2,
+    credential,
+    day1,
+    day2,
+    setThursdayUrl,
+    setTuesdayUrl,
+  ]);
+
+  const body = useMemo(() => {
+    const isOld1 = isBefore(new Date(tuesdayUrl.date), day1);
+    const isOld2 = isBefore(new Date(thursdayUrl.date), day2);
+    return (
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Box marginTop="16px" marginBottom="16px">
+            <Button variant="contained" onClick={signIn}>
+              銀座教会アカウントでログイン
+            </Button>
+            <Button
+              sx={{
+                marginLeft: "16px",
+              }}
+              disabled={
+                apiKey.length === 0 || credential.length === 0 || progressing
+              }
+              variant="contained"
+              onClick={create}
+            >
+              {progressing ? "作成中..." : "配信枠の作成"}
+            </Button>
+          </Box>
+          <Typography color={isOld1 ? "red" : undefined}>
+            配信日: {tuesdayUrl.date}
+            {isOld1 ? "(古くなっています)" : ""}
+          </Typography>
+          <Box>
+            火曜日:{" "}
+            <Link target="_blank" rel="noreferrer" href={tuesdayUrl.url}>
+              {tuesdayUrl.url}
+            </Link>
+          </Box>
+          <Typography color={isOld2 ? "red" : undefined}>
+            配信日: {thursdayUrl.date}
+            {isOld2 ? "(古くなっています)" : ""}
+          </Typography>
+          <Box>
+            木曜日:{" "}
+            <Link target="_blank" rel="noreferrer" href={thursdayUrl.url}>
+              {thursdayUrl.url}
+            </Link>
+          </Box>
+        </Box>
+      </Modal>
+    );
+  }, [
+    apiKey.length,
+    create,
+    credential.length,
+    day1,
+    day2,
+    handleClose,
+    open,
+    progressing,
+    signIn,
+    thursdayUrl.date,
+    thursdayUrl.url,
+    tuesdayUrl.date,
+    tuesdayUrl.url,
+  ]);
 
   return {
     handleOpen,

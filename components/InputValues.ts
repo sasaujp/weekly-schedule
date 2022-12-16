@@ -93,6 +93,24 @@ export const weekdayState = atom<{ [key: number]: BookType }>({
   effects_UNSTABLE: [persistAtom],
 });
 
+export const tuesdayUrlState = atom<StreamingUrlType>({
+  key: "tuesdayUrl",
+  effects_UNSTABLE: [persistAtom],
+  default: {
+    url: "",
+    date: "",
+  },
+});
+
+export const thursdayUrlState = atom<StreamingUrlType>({
+  key: "thursdayUrl",
+  effects_UNSTABLE: [persistAtom],
+  default: {
+    url: "",
+    date: "",
+  },
+});
+
 export type SundayType = {
   weekNoState: RecoilState<number>;
   kyoukairekiState: RecoilState<string>;
