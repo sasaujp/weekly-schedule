@@ -1,12 +1,9 @@
 import { Modal, Box, TextField, Button } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import { useRecoilState } from "recoil";
-import {
-  youtubeApiKeyState,
-  youtubeClientIdState,
-  youtubeClientSecretState,
-} from "./InputValues";
+import { youtubeClientIdState, youtubeClientSecretState } from "./InputValues";
 import { FormWrapper } from "./misc";
+import GoogleOneTapLogin from "react-google-one-tap-login";
 
 const style = {
   position: "absolute" as "absolute",
@@ -22,8 +19,6 @@ const style = {
 
 export const useStream = () => {
   const [open, setOpen] = useState(false);
-
-  const [apiKey, setApiKey] = useRecoilState(youtubeApiKeyState);
   const [clientId, setClientId] = useRecoilState(youtubeClientIdState);
   const [clientSecret, setClientSecret] = useRecoilState(
     youtubeClientSecretState
@@ -52,14 +47,6 @@ export const useStream = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <FormWrapper label="API Key">
-            <TextField
-              fullWidth
-              value={apiKey}
-              onChange={(e) => setApiKey(e.currentTarget.value)}
-            />
-          </FormWrapper>
-
           <FormWrapper label="クライアントID">
             <TextField
               fullWidth
@@ -74,30 +61,10 @@ export const useStream = () => {
               onChange={(e) => setClientSecret(e.currentTarget.value)}
             />
           </FormWrapper>
-
-          <Button
-            sx={{
-              marginTop: "16px",
-            }}
-            variant="contained"
-            onClick={signIn}
-          >
-            ログイン
-          </Button>
         </Box>
       </Modal>
     );
-  }, [
-    apiKey,
-    clientId,
-    clientSecret,
-    handleClose,
-    open,
-    setApiKey,
-    setClientId,
-    setClientSecret,
-    signIn,
-  ]);
+  }, [clientId, clientSecret, handleClose, open, setClientId, setClientSecret]);
 
   return {
     handleOpen,

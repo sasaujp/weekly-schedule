@@ -27,6 +27,7 @@ import { useRecoilState } from "recoil";
 import * as inputs from "../components/InputValues";
 import { useSundayProgram } from "../components/SundayProgram";
 import { FormWrapper, SectionWrapper } from "../components/misc";
+import GoogleOneTapLogin from "react-google-one-tap-login";
 
 const WeekDays: { [key: number]: string } = {
   1: "月",
@@ -408,6 +409,16 @@ const Home: NextPage = () => {
       >
         <Alert severity="success">「{notice}」コピーしました。</Alert>
       </Snackbar>
+      {typeof window !== "undefined" && (
+        <GoogleOneTapLogin
+          onError={(error) => console.log(error)}
+          onSuccess={(response) => console.log(response)}
+          googleAccountConfigs={{
+            client_id:
+              "347509936536-ip5sqj72ubsbsenmajahchsl6bjddc6e.apps.googleusercontent.com",
+          }}
+        />
+      )}
     </>
   );
 };
