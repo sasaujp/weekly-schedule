@@ -18,7 +18,7 @@ import {
   usePrimaryHTML,
   useSecondaryHTML,
 } from "./hooks/useHTML";
-import { SundayType } from "./InputValues";
+import { BiblePageType, StreamingUrlType, SundayType } from "./InputValues";
 import { FormWrapper, SectionWrapper } from "./misc";
 import { PasterPicker } from "./PasterPicker";
 import { SongPicker } from "./SongPicker";
@@ -27,7 +27,9 @@ import { useStream } from "./Stream";
 export type Values = {
   weekNo: number;
   kyoukaireki: string;
-  url: string;
+  csUrl: StreamingUrlType;
+  url: StreamingUrlType;
+  biblePage: BiblePageType;
   title: string;
   paster: string;
   bible: string;
@@ -66,11 +68,11 @@ export const useSundayProgram = (
   values: Values;
   setValues: (values: Values) => void;
 } => {
-  const stream = useStream();
-
   const [weekNo, setWeekNo] = useRecoilState(sunday.weekNoState);
   const [kyoukaireki, setKyoukaireki] = useRecoilState(sunday.kyoukairekiState);
+  const [csUrl, setCsUrl] = useRecoilState(sunday.csUrlState);
   const [url, setUrl] = useRecoilState(sunday.urlState);
+  const [biblePage, setBiblePage] = useRecoilState(sunday.biblePageState);
   const [title, setTitle] = useRecoilState(sunday.titleState);
   const [paster, setPaster] = useRecoilState(sunday.pasterState);
   const [bible, setBible] = useRecoilState(sunday.bibleState);
@@ -98,6 +100,19 @@ export const useSundayProgram = (
   const [verseTo3, setVerseTo3] = useRecoilState(sunday.verseTo3State);
   const [song31, setSong31] = useRecoilState(sunday.song31State);
   const [song32, setSong32] = useRecoilState(sunday.song32State);
+
+  const stream = useStream(
+    day,
+    bible,
+    chapter,
+    verseFrom,
+    verseTo,
+    paster,
+    title,
+    sunday.csUrlState,
+    sunday.urlState,
+    sunday.biblePageState
+  );
 
   const onChangeCheckbox = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -213,7 +228,7 @@ export const useSundayProgram = (
     ]
   );
   const primaryHTML = usePrimaryHTML(
-    url,
+    url.url,
     title,
     paster,
     bible,
@@ -297,15 +312,7 @@ export const useSundayProgram = (
           />
         </FormWrapper>
         <SectionWrapper label="朝礼拝の内容">
-          <Button onClick={stream.handleOpen}>配信URL生成</Button>
-          <FormWrapper label="配信URL">
-            <TextField
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              fullWidth
-              placeholder="https://~"
-            />
-          </FormWrapper>
+          <Button onClick={stream.handleOpen}>配信URL</Button>
           <FormWrapper label="交読詩篇">
             <TextField
               value={psalms}
@@ -510,7 +517,6 @@ export const useSundayProgram = (
     setTitle,
     setTitle2,
     setTitle3,
-    setUrl,
     setVerseFrom,
     setVerseFrom2,
     setVerseFrom3,
@@ -529,7 +535,6 @@ export const useSundayProgram = (
     title,
     title2,
     title3,
-    url,
     verseFrom,
     verseFrom2,
     verseFrom3,
@@ -605,7 +610,9 @@ export const useSundayProgram = (
       const {
         weekNo,
         kyoukaireki,
+        csUrl,
         url,
+        biblePage,
         title,
         paster,
         bible,
@@ -634,7 +641,9 @@ export const useSundayProgram = (
       } = values;
       setWeekNo(weekNo);
       setKyoukaireki(kyoukaireki);
+      setCsUrl(csUrl);
       setUrl(url);
+      setBiblePage(biblePage);
       setTitle(title);
       setPaster(paster);
       setBible(bible);
@@ -664,7 +673,9 @@ export const useSundayProgram = (
     [
       setWeekNo,
       setKyoukaireki,
+      setCsUrl,
       setUrl,
+      setBiblePage,
       setTitle,
       setPaster,
       setBible,
@@ -699,7 +710,9 @@ export const useSundayProgram = (
     values: {
       weekNo,
       kyoukaireki,
+      csUrl,
       url,
+      biblePage,
       title,
       paster,
       bible,
