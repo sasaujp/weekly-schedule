@@ -558,18 +558,18 @@ export const useSundayProgram = (
     return (
       <>
         <Card sx={{ marginTop: "16px", padding: "16px" }}>
+          <p>Week{weekNo}</p>
+          <Button variant="contained" onClick={onCopyWeekNo}>
+            Weekをコピーする
+          </Button>
+        </Card>
+        <Card sx={{ marginTop: "16px", padding: "16px" }}>
           <Typography>
             {day.getFullYear()}年{day.getMonth() + 1}月{day.getDate()}
             日（日）
           </Typography>
           <Button variant="contained" onClick={onCopySunday}>
             日付をコピーする
-          </Button>
-        </Card>
-        <Card sx={{ marginTop: "16px", padding: "16px" }}>
-          <p>Week{weekNo}</p>
-          <Button variant="contained" onClick={onCopyWeekNo}>
-            Weekをコピーする
           </Button>
         </Card>
         <Card sx={{ marginTop: "16px", padding: "16px" }}>
