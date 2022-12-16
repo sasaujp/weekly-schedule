@@ -10,18 +10,6 @@ export const youtubeApiKeyState = atom<string>({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const youtubeClientIdState = atom<string>({
-  key: "youtube-clientid",
-  default: "",
-  effects_UNSTABLE: [persistAtom],
-});
-
-export const youtubeClientSecretState = atom<string>({
-  key: "youtube-clientsecret",
-  default: "",
-  effects_UNSTABLE: [persistAtom],
-});
-
 export const dateState = atom<Date | null>({
   key: "date",
   default: null,
@@ -105,11 +93,31 @@ export const weekdayState = atom<{ [key: number]: BookType }>({
   effects_UNSTABLE: [persistAtom],
 });
 
+export const tuesdayUrlState = atom<StreamingUrlType>({
+  key: "tuesdayUrl",
+  effects_UNSTABLE: [persistAtom],
+  default: {
+    url: "",
+    date: "",
+  },
+});
+
+export const thursdayUrlState = atom<StreamingUrlType>({
+  key: "thursdayUrl",
+  effects_UNSTABLE: [persistAtom],
+  default: {
+    url: "",
+    date: "",
+  },
+});
+
 export type SundayType = {
   weekNoState: RecoilState<number>;
   kyoukairekiState: RecoilState<string>;
   psalmsState: RecoilState<string>;
-  urlState: RecoilState<string>;
+  csUrlState: RecoilState<StreamingUrlType>;
+  urlState: RecoilState<StreamingUrlType>;
+  biblePageState: RecoilState<BiblePageType>;
   titleState: RecoilState<string>;
   song1State: RecoilState<string>;
   song2State: RecoilState<string>;
@@ -136,6 +144,17 @@ export type SundayType = {
   chapter3State: RecoilState<string>;
 };
 
+export type StreamingUrlType = {
+  url: string;
+  date: string;
+};
+
+export type BiblePageType = {
+  type: string;
+  from: number;
+  to: number;
+};
+
 const makeSundayProguramState = (prefix: string): SundayType => {
   const weekNoState = atom<number>({
     key: prefix + "weekNo",
@@ -147,10 +166,21 @@ const makeSundayProguramState = (prefix: string): SundayType => {
     default: "",
     effects_UNSTABLE: [persistAtom],
   });
+  const csUrlState = atom<StreamingUrlType>({
+    key: prefix + "csUrlState",
+    default: { url: "", date: "" },
+    effects_UNSTABLE: [persistAtom],
+  });
 
-  const urlState = atom<string>({
-    key: prefix + "urlState",
-    default: "",
+  const urlState = atom<StreamingUrlType>({
+    key: prefix + "mainUrlState",
+    default: { url: "", date: "" },
+    effects_UNSTABLE: [persistAtom],
+  });
+
+  const biblePageState = atom<BiblePageType>({
+    key: prefix + "biblePageState",
+    default: { type: "旧約聖書", from: 0, to: 0 },
     effects_UNSTABLE: [persistAtom],
   });
   const psalmsState = atom<string>({
@@ -309,6 +339,8 @@ const makeSundayProguramState = (prefix: string): SundayType => {
     weekNoState,
     kyoukairekiState,
     psalmsState,
+    csUrlState,
+    biblePageState,
     urlState,
     titleState,
     song1State,

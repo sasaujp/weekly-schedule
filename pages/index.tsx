@@ -27,6 +27,7 @@ import { useRecoilState } from "recoil";
 import * as inputs from "../components/InputValues";
 import { useSundayProgram } from "../components/SundayProgram";
 import { FormWrapper, SectionWrapper } from "../components/misc";
+import { useApiKey, useWeekdayStream } from "../components/Stream";
 
 const WeekDays: { [key: number]: string } = {
   1: "月",
@@ -40,7 +41,6 @@ const WeekDays: { [key: number]: string } = {
 const Home: NextPage = () => {
   const [date, setDate] = useRecoilState(inputs.dateState);
   const [value, setValue] = useState<Date | null>(null);
-
   useEffect(() => {
     if (date) {
       setValue(new Date(date));
@@ -72,7 +72,6 @@ const Home: NextPage = () => {
     ];
   }, [value]);
   const [show, setShow] = useState("main");
-
   const isFirstOrThirdTuesday = useMemo(() => {
     const tuesday = dates[1];
     if (!tuesday) {
@@ -95,6 +94,16 @@ const Home: NextPage = () => {
   const [weekday, setWeekday] = useRecoilState(inputs.weekdayState);
   const [study1, setStudy1] = useRecoilState(inputs.study1State);
   const [study2, setStudy2] = useRecoilState(inputs.study2State);
+  const { handleOpen: studyStreamHandleOpen, body: studyStreamBody } =
+    useWeekdayStream(
+      dates[1],
+      dates[3],
+      study1,
+      study2,
+      inputs.tuesdayUrlState,
+      inputs.thursdayUrlState
+    );
+
   const [book, setBook] = useRecoilState(inputs.tutorialBookState);
   const [bookPages, setBookPages] = useRecoilState(
     inputs.tutorialBookPageState
@@ -134,9 +143,21 @@ const Home: NextPage = () => {
       sunday1.setValues(sunday2.values);
     }
   }, [setDate, sunday1, sunday2.values, value]);
-
+  const { handleOpen, body } = useApiKey();
   return (
     <>
+      <Button
+        sx={{
+          position: "absolute",
+          top: "0",
+          left: "0",
+        }}
+        onClick={handleOpen}
+        variant="contained"
+      >
+        あいことば
+      </Button>
+
       <Grid
         container
         spacing="8px"
@@ -220,6 +241,8 @@ const Home: NextPage = () => {
                 {show === "weekday" && (
                   <SectionWrapper label="平日の予定">
                     <>
+                      <Button onClick={studyStreamHandleOpen}>配信URL</Button>
+
                       {isFirstOrThirdTuesday && (
                         <Typography>第一・三火曜日です</Typography>
                       )}
@@ -408,6 +431,8 @@ const Home: NextPage = () => {
       >
         <Alert severity="success">「{notice}」コピーしました。</Alert>
       </Snackbar>
+      {body}
+      {studyStreamBody}
     </>
   );
 };
