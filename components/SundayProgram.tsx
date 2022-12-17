@@ -111,7 +111,9 @@ export const useSundayProgram = (
     title,
     sunday.csUrlState,
     sunday.urlState,
-    sunday.biblePageState
+    sunday.biblePageState,
+    setOpen,
+    setNotice
   );
 
   const onChangeCheckbox = useCallback(

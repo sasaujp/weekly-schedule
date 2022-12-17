@@ -50,7 +50,9 @@ export const useStream = (
   title: string,
   csUrlState: RecoilState<StreamingUrlType>,
   urlState: RecoilState<StreamingUrlType>,
-  biblePageState: RecoilState<BiblePageType>
+  biblePageState: RecoilState<BiblePageType>,
+  setNoticeOpen: (val: boolean) => void,
+  setNotice: (text: string) => void
 ) => {
   const [progressing, setProgressing] = useState(false);
   const [credential, setCredential] = useRecoilState(credentialState);
@@ -167,6 +169,17 @@ export const useStream = (
     verseTo,
   ]);
 
+  const onCopy = useCallback(() => {
+    if (!day) {
+      return;
+    }
+    const [dateTitle] = makeDateString(new Date(csUrl.date));
+    const text = `配信日: ${dateTitle}\nCS: ${csUrl.url}\n主日: ${url.url}\nご確認のほどよろしくお願いいたします。`;
+    navigator.clipboard.writeText(text);
+    setNotice("Slack用文言");
+    setNoticeOpen(true);
+  }, [day, csUrl.date, csUrl.url, url.url, setNotice, setNoticeOpen]);
+
   const body = useMemo(() => {
     if (day === null) {
       return null;
@@ -226,7 +239,7 @@ export const useStream = (
                   to: Math.max(Number(e.target.value), page.to),
                 })
               }
-              sx={{ width: 65 }}
+              sx={{ width: 80 }}
               type="number"
               label="ページ"
             />
@@ -240,7 +253,7 @@ export const useStream = (
                   from: Math.min(Number(e.target.value), page.from),
                 })
               }
-              sx={{ width: 65 }}
+              sx={{ width: 80 }}
               type="number"
               label="ページ"
             />
@@ -261,6 +274,15 @@ export const useStream = (
               {url.url}
             </Link>{" "}
           </Box>
+          <Button
+            onClick={onCopy}
+            sx={{
+              marginTop: "16px",
+            }}
+            variant="contained"
+          >
+            Slack用文言をコピー
+          </Button>
         </Box>
       </Modal>
     );
@@ -272,6 +294,7 @@ export const useStream = (
     csUrl.url,
     day,
     handleClose,
+    onCopy,
     open,
     page,
     progressing,
@@ -289,7 +312,6 @@ export const useStream = (
 export const useApiKey = () => {
   const [open, setOpen] = useState(false);
   const [apiKey, setApiKey] = useRecoilState(youtubeApiKeyState);
-  const [_, setCredential] = useRecoilState(credentialState);
 
   const handleOpen = useCallback(() => {
     setOpen(true);
