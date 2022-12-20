@@ -202,7 +202,7 @@ const Home: NextPage = () => {
             <RadioGroup
               aria-labelledby="demo-radio-buttons-group-label"
               name="radio-buttons-group"
-              defaultValue="main"
+              defaultValue="next"
               onChange={(e) => {
                 setShow(e.target.value);
               }}
