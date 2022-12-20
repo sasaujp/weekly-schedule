@@ -20,8 +20,8 @@ import {
 } from "./InputValues";
 import { atom, RecoilState, useRecoilState } from "recoil";
 import { FormWrapper } from "./misc";
-import { isBefore, add } from "date-fns";
-import { BookType } from "./hooks/useHTML";
+import { isBefore } from "date-fns";
+import { BookType, makeChapterString } from "./hooks/useHTML";
 
 const style = {
   position: "absolute" as "absolute",
@@ -184,7 +184,6 @@ export const useStream = (
     if (day === null) {
       return null;
     }
-    console.log(day, new Date(csUrl.date));
     const isOld = isBefore(new Date(csUrl.date), day);
     return (
       <Modal
@@ -359,7 +358,7 @@ const makeDateString = (day: Date) => {
 };
 
 const makeBookString = ({ book, chapter, verseFrom, verseTo }: BookType) => {
-  return `聖書  ${book}${chapter}章${verseFrom}～${verseTo}節`;
+  return `聖書  ${book}${makeChapterString(chapter, verseFrom, verseTo)}`;
 };
 
 export const useWeekdayStream = (

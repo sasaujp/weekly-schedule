@@ -1,5 +1,5 @@
 import { Autocomplete, Stack, TextField, Typography } from "@mui/material";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 
 const OLD = [
   "創世記",

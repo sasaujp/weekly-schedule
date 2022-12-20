@@ -1,5 +1,19 @@
 import { useMemo } from "react";
 
+export const makeChapterString = (
+  chapter: string,
+  verseFrom: string,
+  verseTo: string
+) => {
+  let chapterString = "";
+  if (Number(chapter)) {
+    chapterString = `${chapter}章`;
+  }
+  const optional = verseFrom !== verseTo ? `-${verseTo}` : "";
+
+  return `${chapterString}${verseFrom}${optional}節`;
+};
+
 export const usePrimaryHTML = (
   url: string,
   title: string,
@@ -14,7 +28,6 @@ export const usePrimaryHTML = (
   isFourth: boolean
 ) => {
   return useMemo(() => {
-    const optional = verseFrom !== verseTo ? `-${verseTo}` : "";
     const cs = isFourth
       ? `<strong>教会学校　　9時・大礼拝堂<a href="https://www.ginza-church.com/cs/top/">（インターネット配信・家庭礼拝）</a></strong>`
       : `<strong>教会学校　　9時</strong><br>
@@ -26,7 +39,7 @@ export const usePrimaryHTML = (
 <strong>主日礼拝　　10時30分・大礼拝堂<a href="${url}" target=" rel=" rel="noopener noreferrer">（インターネット配信・家庭礼拝）</a></strong><br>
 交読詩編　${psalms}<br>
 説教　「${title}」　${paster}<br>
-聖書　${bible}　${chapter}章${verseFrom}${optional}節<br>
+聖書　${bible}　${makeChapterString(chapter, verseFrom, verseTo)}<br>
 讃美歌　${song1}、${song2}`;
   }, [
     url,
@@ -54,10 +67,9 @@ export const useSecondaryHTML = (
   song2: string
 ) => {
   return useMemo(() => {
-    const optional = verseFrom !== verseTo ? `-${verseTo}` : "";
     return `<strong>主日第二礼拝　15時・大礼拝堂</strong><br>
 説教　「${title}」　${paster}<br>
-聖書　${bible}　${chapter}章${verseFrom}${optional}節<br>
+聖書　${bible}　${makeChapterString(chapter, verseFrom, verseTo)}<br>
 讃美歌　${song1}、${song2}`;
   }, [title, paster, bible, chapter, verseFrom, verseTo, song1, song2]);
 };
@@ -74,11 +86,10 @@ export const useEveningHTML = (
   song2: string
 ) => {
   return useMemo(() => {
-    const optional = verseFrom !== verseTo ? `-${verseTo}` : "";
     return `<strong>主日夕礼拝　18時・大礼拝堂</strong><br>
 交読詩編　${psalms}<br>
 説教　「${title}」　${paster}<br>
-聖書　${bible}　${chapter}章${verseFrom}${optional}節<br>
+聖書　${bible}　${makeChapterString(chapter, verseFrom, verseTo)}<br>
 讃美歌　${song1}、${song2}`;
   }, [psalms, title, paster, bible, chapter, verseFrom, verseTo, song1, song2]);
 };
@@ -115,10 +126,8 @@ export const useWeekDayHTML = ({
   verseFrom,
   verseTo,
 }: BookType) => {
-  const optional = verseFrom !== verseTo ? `-${verseTo}` : "";
-
   return `<strong>正午礼拝</strong>　　12時15分・大礼拝堂<br>
-聖書　${book}　${chapter}章${verseFrom}${optional}節`;
+聖書　${book}　${makeChapterString(chapter, verseFrom, verseTo)}`;
 };
 
 export const useWednesdayHTML = ({
@@ -128,9 +137,8 @@ export const useWednesdayHTML = ({
   verseTo,
 }: BookType) => {
   return useMemo(() => {
-    const optional = verseFrom !== verseTo ? `-${verseTo}` : "";
     return `<strong>オルガン・メディテーション</strong>　　12時15分・大礼拝堂<br>
-聖書　${book}　${chapter}章${verseFrom}${optional}節`;
+聖書　${book}　${makeChapterString(chapter, verseFrom, verseTo)}`;
   }, [book, chapter, verseFrom, verseTo]);
 };
 
@@ -142,17 +150,20 @@ export const useTuesdayHTML = (
   pageNumber: string
 ) => {
   return useMemo(() => {
-    const optional1 =
-      study1.verseFrom !== study1.verseTo ? `-${study1.verseTo}` : "";
-    const optional2 =
-      bible.verseFrom !== bible.verseTo ? `-${bible.verseTo}` : "";
-
     return `<strong>聖書講義</strong>　　<!--－休会－--><a href="https://www.ginza-church.com/service/info/#kitou">10時30分・小礼拝堂</a><br>
-「${study1.book}　${study1.chapter}章${study1.verseFrom}${optional1}節」<br>
+「${study1.book}　${makeChapterString(
+      study1.chapter,
+      study1.verseFrom,
+      study1.verseTo
+    )}」<br>
 <strong>祈祷会</strong>　　　<!--－休会－-->講義に引き続き11時30分まで<br>
 <br>
 <strong>正午礼拝</strong>　　12時15分・大礼拝堂<br>
-聖書　${bible.book}　${bible.chapter}章${bible.verseFrom}${optional2}節${
+聖書　${bible.book}　${makeChapterString(
+      bible.chapter,
+      bible.verseFrom,
+      bible.verseTo
+    )}${
       isTutorial
         ? `<br>
 <br>
@@ -165,16 +176,19 @@ export const useTuesdayHTML = (
 
 export const useThursdayHTML = (bible: BookType, study: BookType) => {
   return useMemo(() => {
-    const optional1 =
-      bible.verseFrom !== bible.verseTo ? `-${bible.verseTo}` : "";
-    const optional2 =
-      study.verseFrom !== study.verseTo ? `-${study.verseTo}` : "";
-
     return `<strong>正午礼拝</strong>　　12時15分・大礼拝堂<br>
-聖書　${bible.book}　${bible.chapter}章${bible.verseFrom}${optional1}節<br>
+聖書　${bible.book}　${makeChapterString(
+      bible.chapter,
+      bible.verseFrom,
+      bible.verseTo
+    )}<br>
 <br>
 <strong>聖書講義</strong>　　－休会－<!--<a href="https://www.ginza-church.com/service/info/#kitou">　18時00分・小礼拝堂</a>--><br>
-「${study.book}　${study.chapter}章${study.verseFrom}${optional2}節」<br>
+「${study.book}　${makeChapterString(
+      study.chapter,
+      study.verseFrom,
+      study.verseTo
+    )}」<br>
 <strong>祈祷会</strong>　　　－休会－<!--講義に引き続き19時00分まで-->`;
   }, [bible, study]);
 };
