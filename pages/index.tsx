@@ -101,7 +101,9 @@ const Home: NextPage = () => {
       study1,
       study2,
       inputs.tuesdayUrlState,
-      inputs.thursdayUrlState
+      inputs.thursdayUrlState,
+      setOpen,
+      setNotice
     );
 
   const [book, setBook] = useRecoilState(inputs.tutorialBookState);

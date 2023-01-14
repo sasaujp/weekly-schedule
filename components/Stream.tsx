@@ -367,7 +367,9 @@ export const useWeekdayStream = (
   book1: BookType,
   book2: BookType,
   tuesdayUrlState: RecoilState<StreamingUrlType>,
-  thursdayUrlState: RecoilState<StreamingUrlType>
+  thursdayUrlState: RecoilState<StreamingUrlType>,
+  setNoticeOpen: (val: boolean) => void,
+  setNotice: (text: string) => void
 ) => {
   const [progressing, setProgressing] = useState(false);
   const [credential, setCredential] = useRecoilState(credentialState);
@@ -459,6 +461,46 @@ export const useWeekdayStream = (
     setTuesdayUrl,
   ]);
 
+  const copyTitle1 = useCallback(() => {
+    const [_y, m, d] = tuesdayUrl.date.split("/");
+    if (!m || !d) {
+      return;
+    }
+    const text = `${m}月${d}日  火曜日聖書講義・祈祷会`;
+    navigator.clipboard.writeText(text);
+    setNotice("メール用件名");
+    setNoticeOpen(true);
+  }, [setNotice, setNoticeOpen, tuesdayUrl.date]);
+
+  const copyBody1 = useCallback(() => {
+    const text = `${makeBookString(book1)}\n\n${
+      tuesdayUrl.url
+    }\n\n担当　高橋　純`;
+    navigator.clipboard.writeText(text);
+    setNotice("メール用本文");
+    setNoticeOpen(true);
+  }, [book1, setNotice, setNoticeOpen, tuesdayUrl.url]);
+
+  const copyTitle2 = useCallback(() => {
+    const [_y, m, d] = thursdayUrl.date.split("/");
+    if (!m || !d) {
+      return;
+    }
+    const text = `${m}月${d}日  木曜日聖書講義・祈祷会`;
+    navigator.clipboard.writeText(text);
+    setNotice("メール用件名");
+    setNoticeOpen(true);
+  }, [setNotice, setNoticeOpen, thursdayUrl.date]);
+
+  const copyBody2 = useCallback(() => {
+    const text = `${makeBookString(book2)}\n\n${
+      thursdayUrl.url
+    }\n\n担当　山森　風花`;
+    navigator.clipboard.writeText(text);
+    setNotice("メール用本文");
+    setNoticeOpen(true);
+  }, [book2, setNotice, setNoticeOpen, thursdayUrl.url]);
+
   const body = useMemo(() => {
     const isOld1 = isBefore(new Date(tuesdayUrl.date), day1);
     const isOld2 = isBefore(new Date(thursdayUrl.date), day2);
@@ -497,6 +539,22 @@ export const useWeekdayStream = (
               {tuesdayUrl.url}
             </Link>
           </Box>
+
+          <Stack
+            direction="row"
+            alignItems="center"
+            marginTop="16px"
+            marginBottom="16px"
+            spacing="16px"
+          >
+            <Button variant="contained" onClick={copyTitle1}>
+              件名をコピー
+            </Button>
+            <Button variant="contained" onClick={copyBody1}>
+              本文をコピー
+            </Button>
+          </Stack>
+
           <Typography color={isOld2 ? "red" : undefined}>
             配信日: {thursdayUrl.date}
             {isOld2 ? "(古くなっています)" : ""}
@@ -507,6 +565,20 @@ export const useWeekdayStream = (
               {thursdayUrl.url}
             </Link>
           </Box>
+          <Stack
+            direction="row"
+            alignItems="center"
+            marginTop="16px"
+            marginBottom="16px"
+            spacing="16px"
+          >
+            <Button variant="contained" onClick={copyTitle2}>
+              件名をコピー
+            </Button>
+            <Button variant="contained" onClick={copyBody2}>
+              本文をコピー
+            </Button>
+          </Stack>
         </Box>
       </Modal>
     );
