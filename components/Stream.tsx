@@ -475,7 +475,7 @@ export const useWeekdayStream = (
   const copyBody1 = useCallback(() => {
     const text = `${makeBookString(book1)}\n\n${
       tuesdayUrl.url
-    }\n\n担当　高橋　潤`;
+    }\n\n担当  高橋 潤`;
     navigator.clipboard.writeText(text);
     setNotice("メール用本文");
     setNoticeOpen(true);
@@ -495,7 +495,7 @@ export const useWeekdayStream = (
   const copyBody2 = useCallback(() => {
     const text = `${makeBookString(book2)}\n\n${
       thursdayUrl.url
-    }\n\n担当　山森　風花`;
+    }\n\n担当  山森 風花`;
     navigator.clipboard.writeText(text);
     setNotice("メール用本文");
     setNoticeOpen(true);
