@@ -475,7 +475,7 @@ export const useWeekdayStream = (
   const copyBody1 = useCallback(() => {
     const text = `${makeBookString(book1)}\n\n${
       tuesdayUrl.url
-    }\n\n担当　高橋　純`;
+    }\n\n担当　高橋　潤`;
     navigator.clipboard.writeText(text);
     setNotice("メール用本文");
     setNoticeOpen(true);
