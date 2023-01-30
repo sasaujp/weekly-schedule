@@ -103,7 +103,7 @@ export const useStream = (
         JSON.stringify({
           snippet: {
             title: `銀座教会教会学校礼拝(${dateTitle} 9:00~)`,
-            description: `${bibleSection}`,
+            description: `${bibleSection}\n\n※教会学校の礼拝配信は３月末までとさせていただきます。４月からは礼拝堂に集まっての礼拝となりますので、ご予定おきください。`,
             scheduledStartTime: `${dateData}T09:00:00+09:00`,
             isDefaultBroadcast: false,
           },
@@ -584,6 +584,10 @@ export const useWeekdayStream = (
     );
   }, [
     apiKey.length,
+    copyBody1,
+    copyBody2,
+    copyTitle1,
+    copyTitle2,
     create,
     credential.length,
     day1,
