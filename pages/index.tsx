@@ -22,7 +22,7 @@ import {
   useWednesdayHTML,
   useWeekDayHTML,
 } from "../components/hooks/useHTML";
-import { BookNumberInput, BookSelector } from "../components/BookSelector";
+import { BiblePartSelector } from "../components/BookSelector";
 import { useRecoilState } from "recoil";
 import * as inputs from "../components/InputValues";
 import { useSundayProgram } from "../components/SundayProgram";
@@ -254,6 +254,7 @@ const Home: NextPage = () => {
 
                         const onBeforeDay = () => {
                           const value = { ...weekday[d.getDay() - 1] };
+                          value.chapter = value.chapterTo;
                           value.verseTo = value.verseFrom = (
                             parseInt(value.verseTo) + 1
                           ).toString();
@@ -281,70 +282,28 @@ const Home: NextPage = () => {
                                 前の日の続き
                               </Button>
                             )}
-                            <BookSelector
-                              book={v.book}
+                            <BiblePartSelector
+                              book={v}
                               onChange={(val) => {
-                                onChange({ ...v, book: val });
-                              }}
-                            />
-                            <BookNumberInput
-                              chapter={v.chapter}
-                              onChangeChapter={(val) => {
-                                onChange({ ...v, chapter: val });
-                              }}
-                              verseFrom={v.verseFrom}
-                              onChangeVerseFrom={(val) => {
-                                onChange({ ...v, verseFrom: val });
-                              }}
-                              verseTo={v.verseTo}
-                              onChangeVerseTo={(val) => {
-                                onChange({ ...v, verseTo: val });
+                                onChange(val);
                               }}
                             />
                           </FormWrapper>
                         );
                       })}
                       <FormWrapper label="聖書講義(火)の聖書">
-                        <BookSelector
-                          book={study1.book}
+                        <BiblePartSelector
+                          book={study1}
                           onChange={(val) => {
-                            setStudy1({ ...study1, book: val });
-                          }}
-                        />
-                        <BookNumberInput
-                          chapter={study1.chapter}
-                          onChangeChapter={(val) => {
-                            setStudy1({ ...study1, chapter: val });
-                          }}
-                          verseFrom={study1.verseFrom}
-                          onChangeVerseFrom={(val) => {
-                            setStudy1({ ...study1, verseFrom: val });
-                          }}
-                          verseTo={study1.verseTo}
-                          onChangeVerseTo={(val) => {
-                            setStudy1({ ...study1, verseTo: val });
+                            setStudy1(val);
                           }}
                         />
                       </FormWrapper>
                       <FormWrapper label="聖書講義(木)の聖書">
-                        <BookSelector
-                          book={study2.book}
+                        <BiblePartSelector
+                          book={study2}
                           onChange={(val) => {
-                            setStudy2({ ...study2, book: val });
-                          }}
-                        />
-                        <BookNumberInput
-                          chapter={study2.chapter}
-                          onChangeChapter={(val) => {
-                            setStudy2({ ...study2, chapter: val });
-                          }}
-                          verseFrom={study2.verseFrom}
-                          onChangeVerseFrom={(val) => {
-                            setStudy2({ ...study2, verseFrom: val });
-                          }}
-                          verseTo={study2.verseTo}
-                          onChangeVerseTo={(val) => {
-                            setStudy2({ ...study2, verseTo: val });
+                            setStudy2(val);
                           }}
                         />
                       </FormWrapper>

@@ -33,6 +33,7 @@ export const study1State = atom<BookType>({
   default: {
     book: "",
     chapter: "",
+    chapterTo: "",
     verseFrom: "",
     verseTo: "",
   },
@@ -45,6 +46,7 @@ export const study2State = atom<BookType>({
     book: "",
     chapter: "",
     verseFrom: "",
+    chapterTo: "",
     verseTo: "",
   },
   effects_UNSTABLE: [persistAtom],
@@ -56,36 +58,42 @@ export const weekdayState = atom<{ [key: number]: BookType }>({
     1: {
       book: "",
       chapter: "",
+      chapterTo: "",
       verseFrom: "",
       verseTo: "",
     },
     2: {
       book: "",
       chapter: "",
+      chapterTo: "",
       verseFrom: "",
       verseTo: "",
     },
     3: {
       book: "",
       chapter: "",
+      chapterTo: "",
       verseFrom: "",
       verseTo: "",
     },
     4: {
       book: "",
       chapter: "",
+      chapterTo: "",
       verseFrom: "",
       verseTo: "",
     },
     5: {
       book: "",
       chapter: "",
+      chapterTo: "",
       verseFrom: "",
       verseTo: "",
     },
     6: {
       book: "",
       chapter: "",
+      chapterTo: "",
       verseFrom: "",
       verseTo: "",
     },
@@ -122,26 +130,17 @@ export type SundayType = {
   song1State: RecoilState<string>;
   song2State: RecoilState<string>;
   pasterState: RecoilState<string>;
-  bibleState: RecoilState<string>;
-  chapterState: RecoilState<string>;
-  verseFromState: RecoilState<string>;
-  verseToState: RecoilState<string>;
+  bibleState1: RecoilState<BookType>;
   title2State: RecoilState<string>;
   song21State: RecoilState<string>;
   song22State: RecoilState<string>;
   paster2State: RecoilState<string>;
-  bible2State: RecoilState<string>;
-  verseFrom2State: RecoilState<string>;
-  verseTo2State: RecoilState<string>;
-  chapter2State: RecoilState<string>;
+  bibleState2: RecoilState<BookType>;
   title3State: RecoilState<string>;
   song31State: RecoilState<string>;
   song32State: RecoilState<string>;
   paster3State: RecoilState<string>;
-  bible3State: RecoilState<string>;
-  verseFrom3State: RecoilState<string>;
-  verseTo3State: RecoilState<string>;
-  chapter3State: RecoilState<string>;
+  bibleState3: RecoilState<BookType>;
 };
 
 export type StreamingUrlType = {
@@ -213,27 +212,15 @@ const makeSundayProguramState = (prefix: string): SundayType => {
     effects_UNSTABLE: [persistAtom],
   });
 
-  const bibleState = atom<string>({
-    key: prefix + "bibleState",
-    default: "",
-    effects_UNSTABLE: [persistAtom],
-  });
-
-  const chapterState = atom<string>({
-    key: prefix + "chapterState",
-    default: "",
-    effects_UNSTABLE: [persistAtom],
-  });
-
-  const verseFromState = atom<string>({
-    key: prefix + "verseFromState",
-    default: "",
-    effects_UNSTABLE: [persistAtom],
-  });
-
-  const verseToState = atom<string>({
-    key: prefix + "verseToState",
-    default: "",
+  const bibleState1 = atom<BookType>({
+    key: prefix + "bibleState1",
+    default: {
+      book: "",
+      chapter: "",
+      chapterTo: "",
+      verseFrom: "",
+      verseTo: "",
+    },
     effects_UNSTABLE: [persistAtom],
   });
 
@@ -263,26 +250,15 @@ const makeSundayProguramState = (prefix: string): SundayType => {
     effects_UNSTABLE: [persistAtom],
   });
 
-  const bible2State = atom<string>({
-    key: prefix + "bible2State",
-    default: "",
-    effects_UNSTABLE: [persistAtom],
-  });
-
-  const chapter2State = atom<string>({
-    key: prefix + "chapter2State",
-    default: "",
-    effects_UNSTABLE: [persistAtom],
-  });
-
-  const verseFrom2State = atom<string>({
-    key: prefix + "verseFrom2State",
-    default: "",
-    effects_UNSTABLE: [persistAtom],
-  });
-  const verseTo2State = atom<string>({
-    key: prefix + "verseTo2State",
-    default: "",
+  const bibleState2 = atom<BookType>({
+    key: prefix + "bibleState2",
+    default: {
+      book: "",
+      chapter: "",
+      chapterTo: "",
+      verseFrom: "",
+      verseTo: "",
+    },
     effects_UNSTABLE: [persistAtom],
   });
 
@@ -312,26 +288,15 @@ const makeSundayProguramState = (prefix: string): SundayType => {
     effects_UNSTABLE: [persistAtom],
   });
 
-  const bible3State = atom<string>({
-    key: prefix + "bible3State",
-    default: "",
-    effects_UNSTABLE: [persistAtom],
-  });
-
-  const chapter3State = atom<string>({
-    key: prefix + "chapter3State",
-    default: "",
-    effects_UNSTABLE: [persistAtom],
-  });
-
-  const verseFrom3State = atom<string>({
-    key: prefix + "verseFrom3State",
-    default: "",
-    effects_UNSTABLE: [persistAtom],
-  });
-  const verseTo3State = atom<string>({
-    key: prefix + "verseTo3State",
-    default: "",
+  const bibleState3 = atom<BookType>({
+    key: prefix + "bibleState3",
+    default: {
+      book: "",
+      chapter: "",
+      chapterTo: "",
+      verseFrom: "",
+      verseTo: "",
+    },
     effects_UNSTABLE: [persistAtom],
   });
 
@@ -346,26 +311,17 @@ const makeSundayProguramState = (prefix: string): SundayType => {
     song1State,
     song2State,
     pasterState,
-    bibleState,
-    chapterState,
-    verseFromState,
-    verseToState,
+    bibleState1,
     title2State,
     song21State,
     song22State,
     paster2State,
-    bible2State,
-    verseFrom2State,
-    verseTo2State,
-    chapter2State,
+    bibleState2,
     title3State,
     song31State,
     song32State,
     paster3State,
-    bible3State,
-    verseFrom3State,
-    verseTo3State,
-    chapter3State,
+    bibleState3,
   };
 };
 

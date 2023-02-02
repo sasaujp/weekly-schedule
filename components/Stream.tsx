@@ -42,10 +42,7 @@ const credentialState = atom<string>({
 
 export const useStream = (
   day: Date | null,
-  bible: string,
-  chaper: string,
-  verseFrom: string,
-  verseTo: string,
+  bible: BookType,
   paster: string,
   title: string,
   csUrlState: RecoilState<StreamingUrlType>,
@@ -93,9 +90,9 @@ export const useStream = (
       day.getMonth() + 1
     ).padStart(2, "0")}-${String(day.getDate()).padStart(2, "0")}`;
     console.log(dateData);
-    const bibleSection = `聖　書　${bible} ${chaper}章${verseFrom}～${verseTo}節 ${
-      page.type
-    }${page.from}${page.from !== page.to ? `〜${page.to}` : ""}ページ`;
+    const bibleSection = `聖　書　${makeChapterString(bible)} ${page.type}${
+      page.from
+    }${page.from !== page.to ? `〜${page.to}` : ""}ページ`;
     const messageSection = `説　教　「${title}」　${paster}`;
     if (apiKey.length && credential.length) {
       const csResp = await axios.post(
@@ -155,7 +152,6 @@ export const useStream = (
   }, [
     apiKey,
     bible,
-    chaper,
     credential,
     day,
     page.from,
@@ -165,8 +161,6 @@ export const useStream = (
     setCsUrl,
     setUrl,
     title,
-    verseFrom,
-    verseTo,
   ]);
 
   const onCopy = useCallback(() => {
@@ -357,8 +351,8 @@ const makeDateString = (day: Date) => {
   return [dateTitle, dateData];
 };
 
-const makeBookString = ({ book, chapter, verseFrom, verseTo }: BookType) => {
-  return `聖書  ${book}${makeChapterString(chapter, verseFrom, verseTo)}`;
+const makeBookString = (bible: BookType) => {
+  return `聖書  ${makeChapterString(bible)}`;
 };
 
 export const useWeekdayStream = (

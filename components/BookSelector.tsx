@@ -1,5 +1,6 @@
 import { Autocomplete, Stack, TextField, Typography } from "@mui/material";
 import React, { useCallback } from "react";
+import { BookType } from "./hooks/useHTML";
 
 const OLD = [
   "創世記",
@@ -74,7 +75,7 @@ const NEW = [
 ];
 const BOOKS = ["", ...OLD, ...NEW];
 
-export const BookSelector: React.FC<{
+const BookSelector: React.FC<{
   book: string;
   onChange: (value: string) => void;
 }> = ({ book, onChange }) => {
@@ -99,9 +100,11 @@ export const BookSelector: React.FC<{
   );
 };
 
-export const BookNumberInput: React.FC<{
+const BookNumberInput: React.FC<{
   chapter: string;
   onChangeChapter: (val: string) => void;
+  chapterTo: string;
+  onChangeChapterTo: (val: string) => void;
   verseFrom: string;
   onChangeVerseFrom: (val: string) => void;
   verseTo: string;
@@ -109,6 +112,8 @@ export const BookNumberInput: React.FC<{
 }> = ({
   chapter,
   onChangeChapter,
+  chapterTo,
+  onChangeChapterTo,
   verseFrom,
   onChangeVerseFrom,
   verseTo,
@@ -120,6 +125,13 @@ export const BookNumberInput: React.FC<{
     },
     [onChangeChapter]
   );
+  const _onChangeChapterTo = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeChapterTo(e.target.value);
+    },
+    [onChangeChapterTo]
+  );
+
   const _onChangeVerseFrom = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onChangeVerseFrom(e.target.value);
@@ -137,13 +149,13 @@ export const BookNumberInput: React.FC<{
     <Stack
       direction="row"
       alignItems="center"
-      spacing="16px"
+      spacing="8px"
       sx={{ marginBottom: "16px" }}
     >
       <TextField
         value={chapter}
         onChange={_onChangeChapter}
-        sx={{ width: 65 }}
+        sx={{ width: 70 }}
         type="number"
         label="章"
       />
@@ -151,19 +163,104 @@ export const BookNumberInput: React.FC<{
       <TextField
         value={verseFrom}
         onChange={_onChangeVerseFrom}
-        sx={{ width: 65 }}
+        sx={{ width: 70 }}
         type="number"
         label="節"
       />
-      <Typography>から</Typography>
+
+      <Typography>~</Typography>
+      <TextField
+        value={chapterTo}
+        onChange={_onChangeChapterTo}
+        sx={{ width: 70 }}
+        type="number"
+        label="章"
+      />
+      <Typography>章</Typography>
+
       <TextField
         value={verseTo}
         onChange={_onChangeVerseTo}
-        sx={{ width: 65 }}
+        sx={{ width: 70 }}
         type="number"
         label="節"
       />
       <Typography>節</Typography>
     </Stack>
+  );
+};
+
+export const BiblePartSelector: React.FC<{
+  book: BookType;
+  onChange: (book: BookType) => void;
+}> = ({ book, onChange }) => {
+  const onChangeBook = useCallback(
+    (val: string) => {
+      onChange({ ...book, book: val });
+    },
+    [book, onChange]
+  );
+
+  const onChangeChapter = useCallback(
+    (val: string) => {
+      onChange({
+        ...book,
+        chapter: val,
+        chapterTo: String(Math.max(Number(book.chapterTo), Number(val))),
+      });
+    },
+    [book, onChange]
+  );
+  const onChangeChapterTo = useCallback(
+    (val: string) => {
+      onChange({
+        ...book,
+        chapterTo: val,
+        chapter: String(Math.min(Number(book.chapter), Number(val))),
+      });
+    },
+    [book, onChange]
+  );
+  const onChangeVerseFrom = useCallback(
+    (val: string) => {
+      onChange({
+        ...book,
+        verseFrom: val,
+        verseTo:
+          book.chapter === book.chapterTo
+            ? String(Math.max(Number(book.verseTo), Number(val)))
+            : book.verseTo,
+      });
+    },
+    [book, onChange]
+  );
+  const onChangeVerseTo = useCallback(
+    (val: string) => {
+      onChange({
+        ...book,
+        verseTo: val,
+        verseFrom:
+          book.chapter === book.chapterTo
+            ? String(Math.min(Number(book.verseFrom), Number(val)))
+            : book.verseFrom,
+      });
+    },
+    [book, onChange]
+  );
+
+  return (
+    <>
+      <BookSelector book={book.book} onChange={onChangeBook} />
+      <BookNumberInput
+        chapter={book.chapter}
+        onChangeChapter={onChangeChapter}
+        verseFrom={book.verseFrom}
+        onChangeVerseFrom={onChangeVerseFrom}
+        chapterTo={book.chapterTo}
+        onChangeChapterTo={onChangeChapterTo}
+        verseTo={book.verseTo}
+        onChangeVerseTo={onChangeVerseTo}
+      />
+    </>
   );
 };

@@ -11,8 +11,9 @@ import {
 } from "@mui/material";
 import React, { useCallback, useMemo } from "react";
 import { useRecoilState } from "recoil";
-import { BookNumberInput, BookSelector } from "./BookSelector";
+import { BiblePartSelector } from "./BookSelector";
 import {
+  BookType,
   useCombine,
   useEveningHTML,
   usePrimaryHTML,
@@ -32,27 +33,18 @@ export type Values = {
   biblePage: BiblePageType;
   title: string;
   paster: string;
-  bible: string;
-  chapter: string;
-  verseFrom: string;
-  verseTo: string;
+  bible1: BookType;
   psalms: string;
   song1: string;
   song2: string;
   title2: string;
   paster2: string;
-  bible2: string;
-  chapter2: string;
-  verseFrom2: string;
-  verseTo2: string;
+  bible2: BookType;
   song21: string;
   song22: string;
   title3: string;
   paster3: string;
-  bible3: string;
-  chapter3: string;
-  verseFrom3: string;
-  verseTo3: string;
+  bible3: BookType;
   song31: string;
   song32: string;
 };
@@ -75,38 +67,26 @@ export const useSundayProgram = (
   const [biblePage, setBiblePage] = useRecoilState(sunday.biblePageState);
   const [title, setTitle] = useRecoilState(sunday.titleState);
   const [paster, setPaster] = useRecoilState(sunday.pasterState);
-  const [bible, setBible] = useRecoilState(sunday.bibleState);
-  const [chapter, setChapter] = useRecoilState(sunday.chapterState);
-  const [verseFrom, setVerseFrom] = useRecoilState(sunday.verseFromState);
-  const [verseTo, setVerseTo] = useRecoilState(sunday.verseToState);
+  const [bible1, setBible1] = useRecoilState(sunday.bibleState1);
   const [psalms, setPsalms] = useRecoilState(sunday.psalmsState);
   const [song1, setSong1] = useRecoilState(sunday.song1State);
   const [song2, setSong2] = useRecoilState(sunday.song2State);
 
   const [title2, setTitle2] = useRecoilState(sunday.title2State);
   const [paster2, setPaster2] = useRecoilState(sunday.paster2State);
-  const [bible2, setBible2] = useRecoilState(sunday.bible2State);
-  const [chapter2, setChapter2] = useRecoilState(sunday.chapter2State);
-  const [verseFrom2, setVerseFrom2] = useRecoilState(sunday.verseFrom2State);
-  const [verseTo2, setVerseTo2] = useRecoilState(sunday.verseTo2State);
+  const [bible2, setBible2] = useRecoilState(sunday.bibleState2);
   const [song21, setSong21] = useRecoilState(sunday.song21State);
   const [song22, setSong22] = useRecoilState(sunday.song22State);
 
   const [title3, setTitle3] = useRecoilState(sunday.title3State);
   const [paster3, setPaster3] = useRecoilState(sunday.paster3State);
-  const [bible3, setBible3] = useRecoilState(sunday.bible3State);
-  const [chapter3, setChapter3] = useRecoilState(sunday.chapter3State);
-  const [verseFrom3, setVerseFrom3] = useRecoilState(sunday.verseFrom3State);
-  const [verseTo3, setVerseTo3] = useRecoilState(sunday.verseTo3State);
+  const [bible3, setBible3] = useRecoilState(sunday.bibleState3);
   const [song31, setSong31] = useRecoilState(sunday.song31State);
   const [song32, setSong32] = useRecoilState(sunday.song32State);
 
   const stream = useStream(
     day,
-    bible,
-    chapter,
-    verseFrom,
-    verseTo,
+    bible1,
     paster,
     title,
     sunday.csUrlState,
@@ -121,40 +101,34 @@ export const useSundayProgram = (
       if (e.target.checked) {
         setTitle2(title);
         setPaster2(paster);
-        setBible2(bible);
-        setChapter2(chapter);
-        setVerseFrom2(verseFrom);
-        setVerseTo2(verseTo);
+        setBible2(bible1);
         setSong21(song1);
         setSong22(song2);
       } else {
         setTitle2("");
         setPaster2("");
-        setBible2("");
-        setChapter2("");
-        setVerseFrom2("");
-        setVerseTo2("");
+        setBible2({
+          book: "",
+          chapter: "",
+          chapterTo: "",
+          verseFrom: "",
+          verseTo: "",
+        });
         setSong21("");
         setSong22("");
       }
     },
     [
-      bible,
-      chapter,
+      bible1,
       paster,
       setBible2,
-      setChapter2,
       setPaster2,
       setSong21,
       setSong22,
       setTitle2,
-      setVerseFrom2,
-      setVerseTo2,
       song1,
       song2,
       title,
-      verseFrom,
-      verseTo,
     ]
   );
   const isFirstSunday = useMemo(() => {
@@ -176,67 +150,52 @@ export const useSundayProgram = (
       if (e.target.value === "none") {
         setTitle3("");
         setPaster3("");
-        setBible3("");
-        setChapter3("");
-        setVerseFrom3("");
-        setVerseTo3("");
+        setBible3({
+          book: "",
+          chapter: "",
+          chapterTo: "",
+          verseFrom: "",
+          verseTo: "",
+        });
         setSong31("");
         setSong32("");
       } else if (e.target.value === "primary") {
         setTitle3(title);
         setPaster3(paster);
-        setBible3(bible);
-        setChapter3(chapter);
-        setVerseFrom3(verseFrom);
-        setVerseTo3(verseTo);
+        setBible3(bible1);
         setSong31(song1);
         setSong32(song2);
       } else if (e.target.value === "secondary") {
         setTitle3(title2);
         setPaster3(paster2);
         setBible3(bible2);
-        setChapter3(chapter2);
-        setVerseFrom3(verseFrom2);
-        setVerseTo3(verseTo2);
         setSong31(song21);
         setSong32(song22);
       }
     },
     [
-      bible,
+      bible1,
       bible2,
-      chapter,
-      chapter2,
       paster,
       paster2,
       setBible3,
-      setChapter3,
       setPaster3,
       setSong31,
       setSong32,
       setTitle3,
-      setVerseFrom3,
-      setVerseTo3,
       song1,
       song2,
       song21,
       song22,
       title,
       title2,
-      verseFrom,
-      verseFrom2,
-      verseTo,
-      verseTo2,
     ]
   );
   const primaryHTML = usePrimaryHTML(
     url.url,
     title,
     paster,
-    bible,
-    chapter,
-    verseFrom,
-    verseTo,
+    bible1,
     psalms,
     song1,
     song2,
@@ -246,9 +205,6 @@ export const useSundayProgram = (
     title2,
     paster2,
     bible2,
-    chapter2,
-    verseFrom2,
-    verseTo2,
     song21,
     song22
   );
@@ -256,9 +212,6 @@ export const useSundayProgram = (
     title3,
     paster3,
     bible3,
-    chapter3,
-    verseFrom3,
-    verseTo3,
     psalms,
     song31,
     song32
@@ -337,15 +290,7 @@ export const useSundayProgram = (
             onChange={setPaster}
           />
           <FormWrapper label="聖書箇所">
-            <BookSelector book={bible} onChange={setBible} />
-            <BookNumberInput
-              chapter={chapter}
-              onChangeChapter={setChapter}
-              verseFrom={verseFrom}
-              onChangeVerseFrom={setVerseFrom}
-              verseTo={verseTo}
-              onChangeVerseTo={setVerseTo}
-            />
+            <BiblePartSelector book={bible1} onChange={setBible1} />
           </FormWrapper>
           <FormWrapper label="讃美歌1">
             <SongPicker id="song1" onChange={(val) => setSong1(val)} />
@@ -385,15 +330,7 @@ export const useSundayProgram = (
             onChange={setPaster2}
           />
           <FormWrapper label="聖書箇所">
-            <BookSelector book={bible2} onChange={setBible2} />
-            <BookNumberInput
-              chapter={chapter2}
-              onChangeChapter={setChapter2}
-              verseFrom={verseFrom2}
-              onChangeVerseFrom={setVerseFrom2}
-              verseTo={verseTo2}
-              onChangeVerseTo={setVerseTo2}
-            />
+            <BiblePartSelector book={bible2} onChange={setBible2} />
           </FormWrapper>
           <FormWrapper label="讃美歌1">
             <SongPicker id="song2" onChange={(val) => setSong21(val)} />
@@ -451,15 +388,7 @@ export const useSundayProgram = (
             onChange={setPaster3}
           />
           <FormWrapper label="聖書箇所">
-            <BookSelector book={bible3} onChange={setBible3} />
-            <BookNumberInput
-              chapter={chapter3}
-              onChangeChapter={setChapter3}
-              verseFrom={verseFrom3}
-              onChangeVerseFrom={setVerseFrom3}
-              verseTo={verseTo3}
-              onChangeVerseTo={setVerseTo3}
-            />
+            <BiblePartSelector book={bible3} onChange={setBible3} />
           </FormWrapper>
           <FormWrapper label="讃美歌1">
             <SongPicker id="song2" onChange={(val) => setSong31(val)} />
@@ -484,12 +413,9 @@ export const useSundayProgram = (
       </SectionWrapper>
     );
   }, [
-    bible,
+    bible1,
     bible2,
     bible3,
-    chapter,
-    chapter2,
-    chapter3,
     day,
     isFirstSunday,
     kyoukaireki,
@@ -499,12 +425,9 @@ export const useSundayProgram = (
     paster2,
     paster3,
     psalms,
-    setBible,
+    setBible1,
     setBible2,
     setBible3,
-    setChapter,
-    setChapter2,
-    setChapter3,
     setKyoukaireki,
     setPaster,
     setPaster2,
@@ -519,12 +442,6 @@ export const useSundayProgram = (
     setTitle,
     setTitle2,
     setTitle3,
-    setVerseFrom,
-    setVerseFrom2,
-    setVerseFrom3,
-    setVerseTo,
-    setVerseTo2,
-    setVerseTo3,
     setWeekNo,
     song1,
     song2,
@@ -537,12 +454,6 @@ export const useSundayProgram = (
     title,
     title2,
     title3,
-    verseFrom,
-    verseFrom2,
-    verseFrom3,
-    verseTo,
-    verseTo2,
-    verseTo3,
     weekNo,
   ]);
 
@@ -617,27 +528,18 @@ export const useSundayProgram = (
         biblePage,
         title,
         paster,
-        bible,
-        chapter,
-        verseFrom,
-        verseTo,
+        bible1,
         psalms,
         song1,
         song2,
         title2,
         paster2,
         bible2,
-        chapter2,
-        verseFrom2,
-        verseTo2,
         song21,
         song22,
         title3,
         paster3,
         bible3,
-        chapter3,
-        verseFrom3,
-        verseTo3,
         song31,
         song32,
       } = values;
@@ -648,27 +550,18 @@ export const useSundayProgram = (
       setBiblePage(biblePage);
       setTitle(title);
       setPaster(paster);
-      setBible(bible);
-      setChapter(chapter);
-      setVerseFrom(verseFrom);
-      setVerseTo(verseTo);
+      setBible1(bible1);
       setPsalms(psalms);
       setSong1(song1);
       setSong2(song2);
       setTitle2(title2);
       setPaster2(paster2);
       setBible2(bible2);
-      setChapter2(chapter2);
-      setVerseFrom2(verseFrom2);
-      setVerseTo2(verseTo2);
       setSong21(song21);
       setSong22(song22);
       setTitle3(title3);
       setPaster3(paster3);
       setBible3(bible3);
-      setChapter3(chapter3);
-      setVerseFrom3(verseFrom3);
-      setVerseTo3(verseTo3);
       setSong31(song31);
       setSong32(song32);
     },
@@ -680,27 +573,18 @@ export const useSundayProgram = (
       setBiblePage,
       setTitle,
       setPaster,
-      setBible,
-      setChapter,
-      setVerseFrom,
-      setVerseTo,
+      setBible1,
       setPsalms,
       setSong1,
       setSong2,
       setTitle2,
       setPaster2,
       setBible2,
-      setChapter2,
-      setVerseFrom2,
-      setVerseTo2,
       setSong21,
       setSong22,
       setTitle3,
       setPaster3,
       setBible3,
-      setChapter3,
-      setVerseFrom3,
-      setVerseTo3,
       setSong31,
       setSong32,
     ]
@@ -717,27 +601,18 @@ export const useSundayProgram = (
       biblePage,
       title,
       paster,
-      bible,
-      chapter,
-      verseFrom,
-      verseTo,
+      bible1,
       psalms,
       song1,
       song2,
       title2,
       paster2,
       bible2,
-      chapter2,
-      verseFrom2,
-      verseTo2,
       song21,
       song22,
       title3,
       paster3,
       bible3,
-      chapter3,
-      verseFrom3,
-      verseTo3,
       song31,
       song32,
     },

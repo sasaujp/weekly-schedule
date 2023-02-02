@@ -1,27 +1,36 @@
 import { useMemo } from "react";
 
-export const makeChapterString = (
-  chapter: string,
-  verseFrom: string,
-  verseTo: string
-) => {
-  let chapterString = "";
-  if (Number(chapter)) {
-    chapterString = `${chapter}章`;
+export const makeChapterString = (book: BookType) => {
+  const { chapter, chapterTo, verseFrom, verseTo } = book;
+  let text = "";
+  // 章がない
+  if (!Number(chapter)) {
+    // 節が同じ
+    if (verseFrom === verseTo) {
+      text = `${verseFrom}節`;
+    } else {
+      text = `${verseFrom}-${verseTo}節`;
+    }
+  } else if (!chapterTo || chapter === chapterTo) {
+    // 章が同じ
+    text = `${chapter}章`;
+    if (verseFrom === verseTo) {
+      text += `${verseFrom}節`;
+    } else {
+      text += `${verseFrom}-${verseTo}節`;
+    }
+  } else {
+    // 章をまたいでいる
+    text = `${chapter}章${verseFrom}節-${chapterTo}章${verseTo}節`;
   }
-  const optional = verseFrom !== verseTo ? `-${verseTo}` : "";
-
-  return `${chapterString}${verseFrom}${optional}節`;
+  return `${book.book}　${text}`;
 };
 
 export const usePrimaryHTML = (
   url: string,
   title: string,
   paster: string,
-  bible: string,
-  chapter: string,
-  verseFrom: string,
-  verseTo: string,
+  bible: BookType,
   psalms: string,
   song1: string,
   song2: string,
@@ -39,48 +48,30 @@ export const usePrimaryHTML = (
 <strong>主日礼拝　　10時30分・大礼拝堂<a href="${url}" target=" rel=" rel="noopener noreferrer">（インターネット配信・家庭礼拝）</a></strong><br>
 交読詩編　${psalms}<br>
 説教　「${title}」　${paster}<br>
-聖書　${bible}　${makeChapterString(chapter, verseFrom, verseTo)}<br>
+聖書　${makeChapterString(bible)}<br>
 讃美歌　${song1}、${song2}`;
-  }, [
-    url,
-    title,
-    paster,
-    bible,
-    chapter,
-    verseFrom,
-    verseTo,
-    psalms,
-    song1,
-    song2,
-    isFourth,
-  ]);
+  }, [url, title, paster, bible, psalms, song1, song2, isFourth]);
 };
 
 export const useSecondaryHTML = (
   title: string,
   paster: string,
-  bible: string,
-  chapter: string,
-  verseFrom: string,
-  verseTo: string,
+  bible: BookType,
   song1: string,
   song2: string
 ) => {
   return useMemo(() => {
     return `<strong>主日第二礼拝　15時・大礼拝堂</strong><br>
 説教　「${title}」　${paster}<br>
-聖書　${bible}　${makeChapterString(chapter, verseFrom, verseTo)}<br>
+聖書　${makeChapterString(bible)}<br>
 讃美歌　${song1}、${song2}`;
-  }, [title, paster, bible, chapter, verseFrom, verseTo, song1, song2]);
+  }, [title, paster, bible, song1, song2]);
 };
 
 export const useEveningHTML = (
   title: string,
   paster: string,
-  bible: string,
-  chapter: string,
-  verseFrom: string,
-  verseTo: string,
+  bible: BookType,
   psalms: string,
   song1: string,
   song2: string
@@ -89,9 +80,9 @@ export const useEveningHTML = (
     return `<strong>主日夕礼拝　18時・大礼拝堂</strong><br>
 交読詩編　${psalms}<br>
 説教　「${title}」　${paster}<br>
-聖書　${bible}　${makeChapterString(chapter, verseFrom, verseTo)}<br>
+聖書　${makeChapterString(bible)}<br>
 讃美歌　${song1}、${song2}`;
-  }, [psalms, title, paster, bible, chapter, verseFrom, verseTo, song1, song2]);
+  }, [psalms, title, paster, bible, song1, song2]);
 };
 
 export const useCombine = (
@@ -117,29 +108,20 @@ export const useCombine = (
 export type BookType = {
   book: string;
   chapter: string;
+  chapterTo: string;
   verseFrom: string;
   verseTo: string;
 };
-export const useWeekDayHTML = ({
-  book,
-  chapter,
-  verseFrom,
-  verseTo,
-}: BookType) => {
+export const useWeekDayHTML = (bible: BookType) => {
   return `<strong>正午礼拝</strong>　　12時15分・大礼拝堂<br>
-聖書　${book}　${makeChapterString(chapter, verseFrom, verseTo)}`;
+聖書　${makeChapterString(bible)}`;
 };
 
-export const useWednesdayHTML = ({
-  book,
-  chapter,
-  verseFrom,
-  verseTo,
-}: BookType) => {
+export const useWednesdayHTML = (bible: BookType) => {
   return useMemo(() => {
     return `<strong>オルガン・メディテーション</strong>　　12時15分・大礼拝堂<br>
-聖書　${book}　${makeChapterString(chapter, verseFrom, verseTo)}`;
-  }, [book, chapter, verseFrom, verseTo]);
+聖書　${makeChapterString(bible)}`;
+  }, [bible]);
 };
 
 export const useTuesdayHTML = (
@@ -151,19 +133,11 @@ export const useTuesdayHTML = (
 ) => {
   return useMemo(() => {
     return `<strong>聖書講義</strong>　　<!--－休会－--><a href="https://www.ginza-church.com/service/info/#kitou">10時30分・小礼拝堂</a><br>
-「${study1.book}　${makeChapterString(
-      study1.chapter,
-      study1.verseFrom,
-      study1.verseTo
-    )}」<br>
+「${makeChapterString(study1)}」<br>
 <strong>祈祷会</strong>　　　<!--－休会－-->講義に引き続き11時30分まで<br>
 <br>
 <strong>正午礼拝</strong>　　12時15分・大礼拝堂<br>
-聖書　${bible.book}　${makeChapterString(
-      bible.chapter,
-      bible.verseFrom,
-      bible.verseTo
-    )}${
+聖書　${makeChapterString(bible)}${
       isTutorial
         ? `<br>
 <br>
@@ -177,18 +151,10 @@ export const useTuesdayHTML = (
 export const useThursdayHTML = (bible: BookType, study: BookType) => {
   return useMemo(() => {
     return `<strong>正午礼拝</strong>　　12時15分・大礼拝堂<br>
-聖書　${bible.book}　${makeChapterString(
-      bible.chapter,
-      bible.verseFrom,
-      bible.verseTo
-    )}<br>
+聖書　${makeChapterString(bible)}<br>
 <br>
 <strong>聖書講義</strong>　　－休会－<!--<a href="https://www.ginza-church.com/service/info/#kitou">　18時00分・小礼拝堂</a>--><br>
-「${study.book}　${makeChapterString(
-      study.chapter,
-      study.verseFrom,
-      study.verseTo
-    )}」<br>
+「${makeChapterString(study)}」<br>
 <strong>祈祷会</strong>　　　－休会－<!--講義に引き続き19時00分まで-->`;
   }, [bible, study]);
 };
