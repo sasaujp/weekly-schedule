@@ -53,7 +53,6 @@ const Signin: React.FC<{
       client_id:
         "347509936536-ip5sqj72ubsbsenmajahchsl6bjddc6e.apps.googleusercontent.com",
       callback: (resp) => {
-        console.log("response", resp);
         setCredential(resp.access_token);
       },
       scope: "https://www.googleapis.com/auth/youtube.force-ssl",
@@ -120,7 +119,6 @@ export const useStream = (
       const dateData = `${day.getFullYear()}-${String(
         day.getMonth() + 1
       ).padStart(2, "0")}-${String(day.getDate()).padStart(2, "0")}`;
-      console.log(dateData);
       const bibleSection = `聖　書　${makeChapterString(bible)} ${page.type}${
         page.from
       }${page.from !== page.to ? `〜${page.to}` : ""}ページ`;
@@ -565,6 +563,151 @@ export const useWeekdayStream = (
     tuesdayUrl.date,
     tuesdayUrl.url,
   ]);
+
+  return {
+    handleOpen,
+    body,
+  };
+};
+
+type BloadcastData = {
+  nextPageToken?: string;
+  items: BloadcastItem[];
+};
+
+type BloadcastItem = {
+  id: string;
+  snippet: {
+    title: string;
+    description: string;
+  };
+};
+
+export const useStreamHistory = () => {
+  const [data, setData] = useState<BloadcastItem[]>([]);
+  const [progressing, setProgressing] = useState(false);
+  const [open, setOpen] = useState(false);
+  const handleOpen = useCallback(() => {
+    setOpen(true);
+  }, []);
+  const handleClose = useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  const create = useCallback(async (apiKey: string, credential: string) => {
+    setProgressing(true);
+    let pageToken = "";
+    let items: BloadcastItem[] = [];
+    while (true) {
+      const resp = await axios.get<BloadcastData>(
+        `https://www.googleapis.com/youtube/v3/liveBroadcasts?key=${apiKey}&part=snippet&broadcastStatus=completed&broadcastType=all&maxResults=50${
+          pageToken.length ? `&pageToken=${pageToken}` : ""
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${credential}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      items = [
+        ...items,
+        ...resp.data.items.filter((item) => {
+          return item.snippet.title.includes("聖書講義");
+        }),
+      ];
+      if (!resp.data.nextPageToken) {
+        break;
+      }
+      pageToken = resp.data.nextPageToken;
+    }
+    setProgressing(false);
+    setData(items);
+  }, []);
+
+  const [filteredText, setFilteredText] = useState("全て表示");
+
+  const filterdItems = useMemo(() => {
+    if (filteredText === "全て表示") {
+      return data;
+    }
+    return data.filter((i) => {
+      return i.snippet.description.includes(filteredText);
+    });
+  }, [data, filteredText]);
+
+  const text = useMemo(() => {
+    let t = "";
+    for (const item of filterdItems) {
+      t += `${item.snippet.title}\n`;
+      t += `https://youtube.com/live/${item.id}?feature=share\n`;
+      t += `${item.snippet.description}\n`;
+      t += "\n";
+    }
+    return t;
+  }, [filterdItems]);
+
+  const copy = useCallback(() => {
+    navigator.clipboard.writeText(text);
+  }, [text]);
+
+  const body = useMemo(() => {
+    return (
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Signin
+            progressing={progressing}
+            action={create}
+            actionLabel="過去の配信情報を取得"
+          />
+          <Box>
+            <Stack direction="row" alignItems="center" spacing="16px">
+              <FormControl
+                sx={{
+                  marginTop: "16px",
+                  marginBottom: "16px",
+                }}
+              >
+                <InputLabel id="filter-label">絞り込み</InputLabel>
+                <Select
+                  labelId="filter-label"
+                  id="filter-select"
+                  label="絞り込み"
+                  value={filteredText}
+                  onChange={(e) => {
+                    setFilteredText(e.target.value);
+                  }}
+                >
+                  {["全て表示", "髙橋", "山森"].map((v, idx) => (
+                    <MenuItem key={idx} value={v}>
+                      {v}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Button variant="contained" onClick={copy}>
+                コピーする
+              </Button>
+            </Stack>
+            <TextField
+              sx={{
+                maxHeight: "400px",
+                overflowY: "auto",
+              }}
+              multiline={true}
+              value={text}
+              fullWidth
+            />
+          </Box>
+        </Box>
+      </Modal>
+    );
+  }, [open, handleClose, progressing, create, filteredText, text, copy]);
 
   return {
     handleOpen,

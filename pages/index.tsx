@@ -27,7 +27,11 @@ import { useRecoilState } from "recoil";
 import * as inputs from "../components/InputValues";
 import { useSundayProgram } from "../components/SundayProgram";
 import { FormWrapper, SectionWrapper } from "../components/misc";
-import { useApiKey, useWeekdayStream } from "../components/Stream";
+import {
+  useApiKey,
+  useWeekdayStream,
+  useStreamHistory,
+} from "../components/Stream";
 
 const WeekDays: { [key: number]: string } = {
   1: "月",
@@ -105,6 +109,8 @@ const Home: NextPage = () => {
       setOpen,
       setNotice
     );
+  const { handleOpen: streamHistoryHandleOpen, body: streamHistoryBody } =
+    useStreamHistory();
 
   const [book, setBook] = useRecoilState(inputs.tutorialBookState);
   const [bookPages, setBookPages] = useRecoilState(
@@ -244,6 +250,9 @@ const Home: NextPage = () => {
                   <SectionWrapper label="平日の予定">
                     <>
                       <Button onClick={studyStreamHandleOpen}>配信URL</Button>
+                      <Button onClick={streamHistoryHandleOpen}>
+                        過去の配信URL
+                      </Button>
 
                       {isFirstOrThirdTuesday && (
                         <Typography>第一・三火曜日です</Typography>
@@ -394,6 +403,7 @@ const Home: NextPage = () => {
       </Snackbar>
       {body}
       {studyStreamBody}
+      {streamHistoryBody}
     </>
   );
 };
