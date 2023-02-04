@@ -683,7 +683,7 @@ export const useStreamHistory = () => {
                     setFilteredText(e.target.value);
                   }}
                 >
-                  {["全て表示", "髙橋", "山森"].map((v, idx) => (
+                  {["全て表示", "潤", "山森"].map((v, idx) => (
                     <MenuItem key={idx} value={v}>
                       {v}
                     </MenuItem>
