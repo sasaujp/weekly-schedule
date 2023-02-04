@@ -40,31 +40,14 @@ const credentialState = atom<string>({
   default: "",
 });
 
-export const useStream = (
-  day: Date | null,
-  bible: BookType,
-  paster: string,
-  title: string,
-  csUrlState: RecoilState<StreamingUrlType>,
-  urlState: RecoilState<StreamingUrlType>,
-  biblePageState: RecoilState<BiblePageType>,
-  setNoticeOpen: (val: boolean) => void,
-  setNotice: (text: string) => void
-) => {
-  const [progressing, setProgressing] = useState(false);
+const Signin: React.FC<{
+  progressing: boolean;
+  actionLabel: string;
+  action: (apiKey: string, credential: string) => Promise<void>;
+}> = ({ progressing, action, actionLabel }) => {
   const [credential, setCredential] = useRecoilState(credentialState);
-  const [open, setOpen] = useState(false);
   const [apiKey] = useRecoilState(youtubeApiKeyState);
-  const [csUrl, setCsUrl] = useRecoilState(csUrlState);
-  const [url, setUrl] = useRecoilState(urlState);
-  const [page, setPage] = useRecoilState(biblePageState);
 
-  const handleOpen = useCallback(() => {
-    setOpen(true);
-  }, []);
-  const handleClose = useCallback(() => {
-    setOpen(false);
-  }, []);
   const signIn = useCallback(async () => {
     const client = google.accounts.oauth2.initTokenClient({
       client_id:
@@ -78,90 +61,128 @@ export const useStream = (
     client.requestAccessToken();
   }, [setCredential]);
 
-  const create = useCallback(async () => {
-    if (!day) {
-      return;
-    }
-    setProgressing(true);
-    const dateTitle = `${day.getFullYear()}/${
-      day.getMonth() + 1
-    }/${day.getDate()}`;
-    const dateData = `${day.getFullYear()}-${String(
-      day.getMonth() + 1
-    ).padStart(2, "0")}-${String(day.getDate()).padStart(2, "0")}`;
-    console.log(dateData);
-    const bibleSection = `聖　書　${makeChapterString(bible)} ${page.type}${
-      page.from
-    }${page.from !== page.to ? `〜${page.to}` : ""}ページ`;
-    const messageSection = `説　教　「${title}」　${paster}`;
-    if (apiKey.length && credential.length) {
-      const csResp = await axios.post(
-        `https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&part=status&key=${apiKey}`,
-        JSON.stringify({
-          snippet: {
-            title: `銀座教会教会学校礼拝(${dateTitle} 9:00~)`,
-            description: `${bibleSection}\n\n※教会学校の礼拝配信は３月末までとさせていただきます。４月からは礼拝堂に集まっての礼拝となりますので、ご予定おきください。`,
-            scheduledStartTime: `${dateData}T09:00:00+09:00`,
-            isDefaultBroadcast: false,
-          },
-          status: {
-            privacyStatus: "unlisted",
-            selfDeclaredMadeForKids: true,
-          },
-        }),
-        {
-          headers: {
-            Authorization: `Bearer ${credential}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const csId = csResp.data["id"];
-      setCsUrl({
-        url: `https://youtube.com/live/${csId}?feature=share`,
-        date: dateTitle,
-      });
-      const mainResp = await axios.post(
-        `https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&part=status&key=${apiKey}`,
-        JSON.stringify({
-          snippet: {
-            title: `銀座教会主日礼拝(${dateTitle} 10:30~)`,
-            description: `${bibleSection}\n${messageSection}`,
-            scheduledStartTime: `${dateData}T10:30:00+09:00`,
-            isDefaultBroadcast: false,
-          },
-          status: {
-            privacyStatus: "unlisted",
-            selfDeclaredMadeForKids: false,
-          },
-        }),
-        {
-          headers: {
-            Authorization: `Bearer ${credential}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const mainId = mainResp.data["id"];
-      setUrl({
-        url: `https://youtube.com/live/${mainId}?feature=share`,
-        date: dateTitle,
-      });
-      setProgressing(false);
-    }
-  }, [
-    apiKey,
-    bible,
-    credential,
-    day,
-    page.from,
-    page.to,
-    page.type,
-    paster,
-    setCsUrl,
-    setUrl,
-    title,
-  ]);
+  const onAction = useCallback(() => {
+    action(apiKey, credential);
+  }, [action, apiKey, credential]);
+
+  return (
+    <Box marginTop="16px" marginBottom="16px">
+      <Button variant="contained" onClick={signIn}>
+        銀座教会アカウントでログイン
+      </Button>
+      <Button
+        sx={{
+          marginLeft: "16px",
+        }}
+        disabled={apiKey.length === 0 || credential.length === 0 || progressing}
+        variant="contained"
+        onClick={onAction}
+      >
+        {progressing ? "処理中..." : actionLabel}
+      </Button>
+    </Box>
+  );
+};
+
+export const useStream = (
+  day: Date | null,
+  bible: BookType,
+  paster: string,
+  title: string,
+  csUrlState: RecoilState<StreamingUrlType>,
+  urlState: RecoilState<StreamingUrlType>,
+  biblePageState: RecoilState<BiblePageType>,
+  setNoticeOpen: (val: boolean) => void,
+  setNotice: (text: string) => void
+) => {
+  const [progressing, setProgressing] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [csUrl, setCsUrl] = useRecoilState(csUrlState);
+  const [url, setUrl] = useRecoilState(urlState);
+  const [page, setPage] = useRecoilState(biblePageState);
+
+  const handleOpen = useCallback(() => {
+    setOpen(true);
+  }, []);
+  const handleClose = useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  const create = useCallback(
+    async (apiKey: string, credential: string) => {
+      if (!day) {
+        return;
+      }
+      setProgressing(true);
+      const dateTitle = `${day.getFullYear()}/${
+        day.getMonth() + 1
+      }/${day.getDate()}`;
+      const dateData = `${day.getFullYear()}-${String(
+        day.getMonth() + 1
+      ).padStart(2, "0")}-${String(day.getDate()).padStart(2, "0")}`;
+      console.log(dateData);
+      const bibleSection = `聖　書　${makeChapterString(bible)} ${page.type}${
+        page.from
+      }${page.from !== page.to ? `〜${page.to}` : ""}ページ`;
+      const messageSection = `説　教　「${title}」　${paster}`;
+      if (apiKey.length && credential.length) {
+        const csResp = await axios.post(
+          `https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&part=status&key=${apiKey}`,
+          JSON.stringify({
+            snippet: {
+              title: `銀座教会教会学校礼拝(${dateTitle} 9:00~)`,
+              description: `${bibleSection}\n\n※教会学校の礼拝配信は３月末までとさせていただきます。４月からは礼拝堂に集まっての礼拝となりますので、ご予定おきください。`,
+              scheduledStartTime: `${dateData}T09:00:00+09:00`,
+              isDefaultBroadcast: false,
+            },
+            status: {
+              privacyStatus: "unlisted",
+              selfDeclaredMadeForKids: true,
+            },
+          }),
+          {
+            headers: {
+              Authorization: `Bearer ${credential}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const csId = csResp.data["id"];
+        setCsUrl({
+          url: `https://youtube.com/live/${csId}?feature=share`,
+          date: dateTitle,
+        });
+        const mainResp = await axios.post(
+          `https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&part=status&key=${apiKey}`,
+          JSON.stringify({
+            snippet: {
+              title: `銀座教会主日礼拝(${dateTitle} 10:30~)`,
+              description: `${bibleSection}\n${messageSection}`,
+              scheduledStartTime: `${dateData}T10:30:00+09:00`,
+              isDefaultBroadcast: false,
+            },
+            status: {
+              privacyStatus: "unlisted",
+              selfDeclaredMadeForKids: false,
+            },
+          }),
+          {
+            headers: {
+              Authorization: `Bearer ${credential}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const mainId = mainResp.data["id"];
+        setUrl({
+          url: `https://youtube.com/live/${mainId}?feature=share`,
+          date: dateTitle,
+        });
+        setProgressing(false);
+      }
+    },
+    [bible, day, page.from, page.to, page.type, paster, setCsUrl, setUrl, title]
+  );
 
   const onCopy = useCallback(() => {
     if (!day) {
@@ -187,23 +208,11 @@ export const useStream = (
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Box marginTop="16px" marginBottom="16px">
-            <Button variant="contained" onClick={signIn}>
-              銀座教会アカウントでログイン
-            </Button>
-            <Button
-              sx={{
-                marginLeft: "16px",
-              }}
-              disabled={
-                apiKey.length === 0 || credential.length === 0 || progressing
-              }
-              variant="contained"
-              onClick={create}
-            >
-              {progressing ? "作成中..." : "配信枠の作成"}
-            </Button>
-          </Box>
+          <Signin
+            action={create}
+            actionLabel="配信枠の作成"
+            progressing={progressing}
+          />
           <Stack
             direction="row"
             alignItems="center"
@@ -280,9 +289,7 @@ export const useStream = (
       </Modal>
     );
   }, [
-    apiKey.length,
     create,
-    credential.length,
     csUrl.date,
     csUrl.url,
     day,
@@ -292,7 +299,6 @@ export const useStream = (
     page,
     progressing,
     setPage,
-    signIn,
     url.url,
   ]);
 
@@ -366,9 +372,7 @@ export const useWeekdayStream = (
   setNotice: (text: string) => void
 ) => {
   const [progressing, setProgressing] = useState(false);
-  const [credential, setCredential] = useRecoilState(credentialState);
   const [open, setOpen] = useState(false);
-  const [apiKey] = useRecoilState(youtubeApiKeyState);
   const [tuesdayUrl, setTuesdayUrl] = useRecoilState(tuesdayUrlState);
   const [thursdayUrl, setThursdayUrl] = useRecoilState(thursdayUrlState);
 
@@ -379,81 +383,62 @@ export const useWeekdayStream = (
     setOpen(false);
   }, []);
 
-  const signIn = useCallback(async () => {
-    const client = google.accounts.oauth2.initTokenClient({
-      client_id:
-        "347509936536-ip5sqj72ubsbsenmajahchsl6bjddc6e.apps.googleusercontent.com",
-      callback: (resp) => {
-        console.log("response", resp);
-        setCredential(resp.access_token);
-      },
-      scope: "https://www.googleapis.com/auth/youtube.force-ssl",
-    });
-    client.requestAccessToken();
-  }, [setCredential]);
-
-  const create = useCallback(async () => {
-    setProgressing(true);
-    if (apiKey.length && credential.length) {
-      const values = [
-        {
-          day: day1,
-          time: "10:30",
-          description: `${makeBookString(
-            book1
-          )}\n　　　　　　　　　　　　髙橋　潤　牧師`,
-          setter: setTuesdayUrl,
-        },
-        {
-          day: day2,
-          time: "18:00",
-          description: `${makeBookString(
-            book2
-          )}\n　　　　　　　　　　　　山森　風花　伝道師`,
-          setter: setThursdayUrl,
-        },
-      ];
-      for (const { day, description, time, setter } of values) {
-        const [dateTitle, dateData] = makeDateString(day);
-        const resp = await axios.post(
-          `https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&part=status&key=${apiKey}`,
-          JSON.stringify({
-            snippet: {
-              title: `銀座教会聖書講義祈祷会(${dateTitle} ${time}~)`,
-              description: description,
-              scheduledStartTime: `${dateData}T${time}:00+09:00`,
-              isDefaultBroadcast: false,
-            },
-            status: {
-              privacyStatus: "unlisted",
-              selfDeclaredMadeForKids: false,
-            },
-          }),
+  const create = useCallback(
+    async (apiKey: string, credential: string) => {
+      setProgressing(true);
+      if (apiKey.length && credential.length) {
+        const values = [
           {
-            headers: {
-              Authorization: `Bearer ${credential}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const id = resp.data["id"];
-        setter({
-          url: `https://youtube.com/live/${id}?feature=share`,
-          date: dateTitle,
-        });
+            day: day1,
+            time: "10:30",
+            description: `${makeBookString(
+              book1
+            )}\n　　　　　　　　　　　　髙橋　潤　牧師`,
+            setter: setTuesdayUrl,
+          },
+          {
+            day: day2,
+            time: "18:00",
+            description: `${makeBookString(
+              book2
+            )}\n　　　　　　　　　　　　山森　風花　伝道師`,
+            setter: setThursdayUrl,
+          },
+        ];
+        for (const { day, description, time, setter } of values) {
+          const [dateTitle, dateData] = makeDateString(day);
+          const resp = await axios.post(
+            `https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&part=status&key=${apiKey}`,
+            JSON.stringify({
+              snippet: {
+                title: `銀座教会聖書講義祈祷会(${dateTitle} ${time}~)`,
+                description: description,
+                scheduledStartTime: `${dateData}T${time}:00+09:00`,
+                isDefaultBroadcast: false,
+              },
+              status: {
+                privacyStatus: "unlisted",
+                selfDeclaredMadeForKids: false,
+              },
+            }),
+            {
+              headers: {
+                Authorization: `Bearer ${credential}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const id = resp.data["id"];
+          setter({
+            url: `https://youtube.com/live/${id}?feature=share`,
+            date: dateTitle,
+          });
+        }
+        setProgressing(false);
       }
-      setProgressing(false);
-    }
-  }, [
-    apiKey,
-    book1,
-    book2,
-    credential,
-    day1,
-    day2,
-    setThursdayUrl,
-    setTuesdayUrl,
-  ]);
+    },
+    [book1, book2, day1, day2, setThursdayUrl, setTuesdayUrl]
+  );
 
   const copyTitle1 = useCallback(() => {
     const [_y, m, d] = tuesdayUrl.date.split("/");
@@ -506,23 +491,11 @@ export const useWeekdayStream = (
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Box marginTop="16px" marginBottom="16px">
-            <Button variant="contained" onClick={signIn}>
-              銀座教会アカウントでログイン
-            </Button>
-            <Button
-              sx={{
-                marginLeft: "16px",
-              }}
-              disabled={
-                apiKey.length === 0 || credential.length === 0 || progressing
-              }
-              variant="contained"
-              onClick={create}
-            >
-              {progressing ? "作成中..." : "配信枠の作成"}
-            </Button>
-          </Box>
+          <Signin
+            progressing={progressing}
+            action={create}
+            actionLabel="配信枠の作成"
+          />
           <Typography color={isOld1 ? "red" : undefined}>
             配信日: {tuesdayUrl.date}
             {isOld1 ? "(古くなっています)" : ""}
@@ -577,19 +550,16 @@ export const useWeekdayStream = (
       </Modal>
     );
   }, [
-    apiKey.length,
     copyBody1,
     copyBody2,
     copyTitle1,
     copyTitle2,
     create,
-    credential.length,
     day1,
     day2,
     handleClose,
     open,
     progressing,
-    signIn,
     thursdayUrl.date,
     thursdayUrl.url,
     tuesdayUrl.date,
