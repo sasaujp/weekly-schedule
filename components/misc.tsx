@@ -14,11 +14,17 @@ export const SectionWrapper: React.FC<{
 
 export const FormWrapper: React.FC<{
   label: string;
+  description?: string;
   children?: React.ReactNode;
-}> = ({ label, children }) => {
+}> = ({ label, description, children }) => {
   return (
     <Box marginTop="16px">
-      <Typography>{label}</Typography>
+      <Typography>
+        {label}{" "}
+        <Typography color="red" component="span" fontSize="small">
+          {description}
+        </Typography>
+      </Typography>
       {children}
     </Box>
   );

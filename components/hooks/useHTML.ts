@@ -112,16 +112,22 @@ export type BookType = {
   verseFrom: string;
   verseTo: string;
 };
-export const useWeekDayHTML = (bible: BookType) => {
-  return `<strong>正午礼拝</strong>　　12時15分・大礼拝堂<br>
-聖書　${makeChapterString(bible)}`;
+export const useWeekDayHTML = (bible: BookType, holiday: boolean) => {
+  return useMemo(() => {
+    return `<strong>正午礼拝</strong>　　${
+      holiday ? "－休会－" : "12時15分・大礼拝堂"
+    }<br>
+    聖書${holiday ? "日課" : ""}　${makeChapterString(bible)}`;
+  }, [bible, holiday]);
 };
 
-export const useWednesdayHTML = (bible: BookType) => {
+export const useWednesdayHTML = (bible: BookType, holiday: boolean) => {
   return useMemo(() => {
-    return `<strong>オルガン・メディテーション</strong>　　12時15分・大礼拝堂<br>
-聖書　${makeChapterString(bible)}`;
-  }, [bible]);
+    return `<strong>オルガン・メディテーション</strong>　　${
+      holiday ? "－休会－" : "12時15分・大礼拝堂"
+    }<br>
+聖書${holiday ? "日課" : ""}　${makeChapterString(bible)}`;
+  }, [bible, holiday]);
 };
 
 export const useTuesdayHTML = (
@@ -129,32 +135,48 @@ export const useTuesdayHTML = (
   study1: BookType,
   isTutorial: boolean,
   book: string,
-  pageNumber: string
+  pageNumber: string,
+  holiday: boolean
 ) => {
   return useMemo(() => {
-    return `<strong>聖書講義</strong>　　<!--－休会－--><a href="https://www.ginza-church.com/service/info/#kitou">10時30分・小礼拝堂</a><br>
-「${makeChapterString(study1)}」<br>
-<strong>祈祷会</strong>　　　<!--－休会－-->講義に引き続き11時30分まで<br>
+    const studyString = `<a href="https://www.ginza-church.com/service/info/#kitou">10時30分・小礼拝堂</a><br>「${makeChapterString(
+      study1
+    )}」`;
+    return `<strong>聖書講義</strong>　　${
+      holiday ? "－休会－" : studyString
+    }<br>
+<strong>祈祷会</strong>　　　${
+      holiday ? "－休会－" : "講義に引き続き11時30分まで"
+    }<br>
 <br>
-<strong>正午礼拝</strong>　　12時15分・大礼拝堂<br>
-聖書　${makeChapterString(bible)}${
+<strong>正午礼拝</strong>　　${holiday ? "－休会－" : "12時15分・大礼拝堂"}<br>
+聖書${holiday ? "日課" : ""}　${makeChapterString(bible)}${
       isTutorial
         ? `<br>
 <br>
-<strong>入門講座</strong>　　<a href="https://www.ginza-church.com/service/info/#nyuumon">18時・小礼拝堂</a><br>
-『${book}』${pageNumber}頁-`
+<strong>入門講座</strong>　　${
+            holiday
+              ? "－休会－"
+              : `<a href="https://www.ginza-church.com/service/info/#nyuumon">18時・小礼拝堂</a><br>『${book}』${pageNumber}頁-`
+          }`
         : ""
     }`;
-  }, [bible, study1, isTutorial, book, pageNumber]);
+  }, [bible, study1, isTutorial, book, pageNumber, holiday]);
 };
 
-export const useThursdayHTML = (bible: BookType, study: BookType) => {
+export const useThursdayHTML = (
+  bible: BookType,
+  study: BookType,
+  holiday: boolean
+) => {
   return useMemo(() => {
-    return `<strong>正午礼拝</strong>　　12時15分・大礼拝堂<br>
-聖書　${makeChapterString(bible)}<br>
+    return `<strong>正午礼拝</strong>　　${
+      holiday ? "－休会－" : "12時15分・大礼拝堂"
+    }<br>
+聖書${holiday ? "日課" : ""}　${makeChapterString(bible)}<br>
 <br>
 <strong>聖書講義</strong>　　－休会－<!--<a href="https://www.ginza-church.com/service/info/#kitou">　18時00分・小礼拝堂</a>--><br>
 「${makeChapterString(study)}」<br>
 <strong>祈祷会</strong>　　　－休会－<!--講義に引き続き19時00分まで-->`;
-  }, [bible, study]);
+  }, [bible, study, holiday]);
 };

@@ -32,6 +32,7 @@ import {
   useWeekdayStream,
   useStreamHistory,
 } from "../components/Stream";
+import { useJapaneseHolidays } from "../components/hooks/useJapaneseHolidays";
 
 const WeekDays: { [key: number]: string } = {
   1: "月",
@@ -116,19 +117,25 @@ const Home: NextPage = () => {
   const [bookPages, setBookPages] = useRecoilState(
     inputs.tutorialBookPageState
   );
+  const holidays = useJapaneseHolidays(dates);
 
-  const mondayHTML = useWeekDayHTML(weekday[1]);
+  const mondayHTML = useWeekDayHTML(weekday[1], holidays[0] !== undefined);
   const tuesdayHTML = useTuesdayHTML(
     weekday[2],
     study1,
     isFirstOrThirdTuesday,
     book,
-    bookPages
+    bookPages,
+    holidays[1] !== undefined
   );
-  const wednesdayHTML = useWednesdayHTML(weekday[3]);
-  const thursdayHTML = useThursdayHTML(weekday[4], study2);
-  const fridayHTML = useWeekDayHTML(weekday[5]);
-  const saturdayHTML = useWeekDayHTML(weekday[6]);
+  const wednesdayHTML = useWednesdayHTML(weekday[3], holidays[2] !== undefined);
+  const thursdayHTML = useThursdayHTML(
+    weekday[4],
+    study2,
+    holidays[3] !== undefined
+  );
+  const fridayHTML = useWeekDayHTML(weekday[5], holidays[4] !== undefined);
+  const saturdayHTML = useWeekDayHTML(weekday[6], holidays[5] !== undefined);
 
   const weekdayHTML: { [key: number]: string } = {
     1: mondayHTML,
@@ -285,6 +292,7 @@ const Home: NextPage = () => {
                             label={`${d.getMonth() + 1}月${d.getDate()}日(${
                               WeekDays[d.getDay()]
                             })の聖書`}
+                            description={holidays[idx]}
                           >
                             {idx !== 0 && (
                               <Button variant="text" onClick={onBeforeDay}>
