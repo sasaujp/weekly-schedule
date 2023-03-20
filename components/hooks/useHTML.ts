@@ -176,7 +176,7 @@ export const useThursdayHTML = (
 聖書${holiday ? "日課" : ""}　${makeChapterString(bible)}<br>
 <br>
 <strong>聖書講義</strong>　　－休会－<!--<a href="https://www.ginza-church.com/service/info/#kitou">　18時00分・小礼拝堂</a>--><br>
-「${makeChapterString(study)}」<br>
+${holiday ? "" : `「${makeChapterString(study)}」<br>`}
 <strong>祈祷会</strong>　　　－休会－<!--講義に引き続き19時00分まで-->`;
   }, [bible, study, holiday]);
 };
