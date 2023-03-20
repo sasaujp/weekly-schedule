@@ -99,10 +99,11 @@ const Home: NextPage = () => {
   const [weekday, setWeekday] = useRecoilState(inputs.weekdayState);
   const [study1, setStudy1] = useRecoilState(inputs.study1State);
   const [study2, setStudy2] = useRecoilState(inputs.study2State);
+  const holidays = useJapaneseHolidays(dates);
   const { handleOpen: studyStreamHandleOpen, body: studyStreamBody } =
     useWeekdayStream(
-      dates[1],
-      dates[3],
+      holidays[1] ? dates[1] : null,
+      holidays[3] ? dates[3] : null,
       study1,
       study2,
       inputs.tuesdayUrlState,
@@ -117,7 +118,6 @@ const Home: NextPage = () => {
   const [bookPages, setBookPages] = useRecoilState(
     inputs.tutorialBookPageState
   );
-  const holidays = useJapaneseHolidays(dates);
 
   const mondayHTML = useWeekDayHTML(weekday[1], holidays[0] !== undefined);
   const tuesdayHTML = useTuesdayHTML(
