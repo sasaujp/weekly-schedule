@@ -359,9 +359,19 @@ const makeBookString = (bible: BookType) => {
   return `聖書  ${makeChapterString(bible)}`;
 };
 
+const makeStreamStatus = (urlType: StreamingUrlType, day: Date | null) => {
+  if (day === null) {
+    return "(祝日なのでスキップします)";
+  }
+  if (isBefore(new Date(urlType.date), day)) {
+    return "古くなっています";
+  }
+  return null;
+};
+
 export const useWeekdayStream = (
-  day1: Date,
-  day2: Date,
+  day1: Date | null,
+  day2: Date | null,
   book1: BookType,
   book2: BookType,
   tuesdayUrlState: RecoilState<StreamingUrlType>,
@@ -404,6 +414,9 @@ export const useWeekdayStream = (
           },
         ];
         for (const { day, description, time, setter } of values) {
+          if (!day) {
+            continue;
+          }
           const [dateTitle, dateData] = makeDateString(day);
           const resp = await axios.post(
             `https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&part=status&key=${apiKey}`,
@@ -479,8 +492,8 @@ export const useWeekdayStream = (
   }, [book2, setNotice, setNoticeOpen, thursdayUrl.url]);
 
   const body = useMemo(() => {
-    const isOld1 = isBefore(new Date(tuesdayUrl.date), day1);
-    const isOld2 = isBefore(new Date(thursdayUrl.date), day2);
+    const status1 = makeStreamStatus(tuesdayUrl, day1);
+    const status2 = makeStreamStatus(thursdayUrl, day2);
     return (
       <Modal
         open={open}
@@ -494,9 +507,9 @@ export const useWeekdayStream = (
             action={create}
             actionLabel="配信枠の作成"
           />
-          <Typography color={isOld1 ? "red" : undefined}>
+          <Typography color={status1 ? "red" : undefined}>
             配信日: {tuesdayUrl.date}
-            {isOld1 ? "(古くなっています)" : ""}
+            {status1}
           </Typography>
           <Box>
             火曜日:{" "}
@@ -520,9 +533,9 @@ export const useWeekdayStream = (
             </Button>
           </Stack>
 
-          <Typography color={isOld2 ? "red" : undefined}>
+          <Typography color={status2 ? "red" : undefined}>
             配信日: {thursdayUrl.date}
-            {isOld2 ? "(古くなっています)" : ""}
+            {status2}
           </Typography>
           <Box>
             木曜日:{" "}
