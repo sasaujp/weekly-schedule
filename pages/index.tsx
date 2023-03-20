@@ -102,8 +102,8 @@ const Home: NextPage = () => {
   const holidays = useJapaneseHolidays(dates);
   const { handleOpen: studyStreamHandleOpen, body: studyStreamBody } =
     useWeekdayStream(
-      holidays[1] ? dates[1] : null,
-      holidays[3] ? dates[3] : null,
+      holidays[1] ? null : dates[1],
+      holidays[3] ? null : dates[3],
       study1,
       study2,
       inputs.tuesdayUrlState,
