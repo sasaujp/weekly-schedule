@@ -364,7 +364,7 @@ const makeStreamStatus = (urlType: StreamingUrlType, day: Date | null) => {
     return "(祝日なのでスキップします)";
   }
   if (isBefore(new Date(urlType.date), day)) {
-    return "古くなっています";
+    return "(古くなっています)";
   }
   return null;
 };
@@ -571,10 +571,8 @@ export const useWeekdayStream = (
     handleClose,
     open,
     progressing,
-    thursdayUrl.date,
-    thursdayUrl.url,
-    tuesdayUrl.date,
-    tuesdayUrl.url,
+    thursdayUrl,
+    tuesdayUrl,
   ]);
 
   return {
