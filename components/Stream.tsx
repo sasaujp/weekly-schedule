@@ -23,6 +23,8 @@ import { FormWrapper } from "./misc";
 import { isBefore } from "date-fns";
 import { BookType, makeChapterString } from "./hooks/useHTML";
 
+const CS_SKIP = true
+
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -124,32 +126,34 @@ export const useStream = (
       }${page.from !== page.to ? `〜${page.to}` : ""}ページ`;
       const messageSection = `説　教　「${title}」　${paster}`;
       if (apiKey.length && credential.length) {
-        const csResp = await axios.post(
-          `https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&part=status&key=${apiKey}`,
-          JSON.stringify({
-            snippet: {
-              title: `銀座教会教会学校礼拝(${dateTitle} 9:00~)`,
-              description: `${bibleSection}\n\n※教会学校の礼拝配信は３月末までとさせていただきます。４月からは礼拝堂に集まっての礼拝となりますので、ご予定おきください。`,
-              scheduledStartTime: `${dateData}T09:00:00+09:00`,
-              isDefaultBroadcast: false,
-            },
-            status: {
-              privacyStatus: "unlisted",
-              selfDeclaredMadeForKids: true,
-            },
-          }),
-          {
-            headers: {
-              Authorization: `Bearer ${credential}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const csId = csResp.data["id"];
-        setCsUrl({
-          url: `https://youtube.com/live/${csId}?feature=share`,
-          date: dateTitle,
-        });
+        if (!CS_SKIP) {
+          const csResp = await axios.post(
+                  `https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&part=status&key=${apiKey}`,
+                  JSON.stringify({
+                    snippet: {
+                      title: `銀座教会教会学校礼拝(${dateTitle} 9:00~)`,
+                      description: `${bibleSection}\n\n※教会学校の礼拝配信は３月末までとさせていただきます。４月からは礼拝堂に集まっての礼拝となりますので、ご予定おきください。`,
+                      scheduledStartTime: `${dateData}T09:00:00+09:00`,
+                      isDefaultBroadcast: false,
+                    },
+                    status: {
+                      privacyStatus: "unlisted",
+                      selfDeclaredMadeForKids: true,
+                    },
+                  }),
+                  {
+                    headers: {
+                      Authorization: `Bearer ${credential}`,
+                      "Content-Type": "application/json",
+                    },
+                  }
+                  );
+          const csId = csResp.data["id"];
+          setCsUrl({
+            url: `https://youtube.com/live/${csId}?feature=share`,
+            date: dateTitle,
+          });
+        }
         const mainResp = await axios.post(
           `https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&part=status&key=${apiKey}`,
           JSON.stringify({
@@ -262,12 +266,14 @@ export const useStream = (
             配信日: {csUrl.date}
             {isOld ? "(古くなっています)" : ""}
           </Typography>
-          <Box>
-            CS:{" "}
-            <Link target="_blank" rel="noreferrer" href={csUrl.url}>
-              {csUrl.url}
-            </Link>{" "}
-          </Box>
+          {!CS_SKIP ? (
+            <Box>
+              CS:{" "}
+              <Link target="_blank" rel="noreferrer" href={csUrl.url}>
+                {csUrl.url}
+              </Link>{" "}
+            </Box>
+          ) : null}
           <Box>
             主日:{" "}
             <Link target="_blank" rel="noreferrer" href={url.url}>
