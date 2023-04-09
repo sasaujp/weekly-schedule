@@ -9,7 +9,7 @@ import { useCallback } from "react";
 
 const PASTERS = [
   "髙橋　潤　牧師",
-  "川村　満　牧師",
+  "川村　満　副牧師",
   "山森　風花　伝道師",
   "近藤　勝彦　牧師",
   "中村　謙一　牧師",

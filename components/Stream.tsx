@@ -23,7 +23,7 @@ import { FormWrapper } from "./misc";
 import { isBefore } from "date-fns";
 import { BookType, makeChapterString } from "./hooks/useHTML";
 
-const CS_SKIP = true
+const CS_SKIP = true;
 
 const style = {
   position: "absolute" as "absolute",
@@ -128,26 +128,26 @@ export const useStream = (
       if (apiKey.length && credential.length) {
         if (!CS_SKIP) {
           const csResp = await axios.post(
-                  `https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&part=status&key=${apiKey}`,
-                  JSON.stringify({
-                    snippet: {
-                      title: `銀座教会教会学校礼拝(${dateTitle} 9:00~)`,
-                      description: `${bibleSection}\n\n※教会学校の礼拝配信は３月末までとさせていただきます。４月からは礼拝堂に集まっての礼拝となりますので、ご予定おきください。`,
-                      scheduledStartTime: `${dateData}T09:00:00+09:00`,
-                      isDefaultBroadcast: false,
-                    },
-                    status: {
-                      privacyStatus: "unlisted",
-                      selfDeclaredMadeForKids: true,
-                    },
-                  }),
-                  {
-                    headers: {
-                      Authorization: `Bearer ${credential}`,
-                      "Content-Type": "application/json",
-                    },
-                  }
-                  );
+            `https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&part=status&key=${apiKey}`,
+            JSON.stringify({
+              snippet: {
+                title: `銀座教会教会学校礼拝(${dateTitle} 9:00~)`,
+                description: `${bibleSection}\n\n※教会学校の礼拝配信は３月末までとさせていただきます。４月からは礼拝堂に集まっての礼拝となりますので、ご予定おきください。`,
+                scheduledStartTime: `${dateData}T09:00:00+09:00`,
+                isDefaultBroadcast: false,
+              },
+              status: {
+                privacyStatus: "unlisted",
+                selfDeclaredMadeForKids: true,
+              },
+            }),
+            {
+              headers: {
+                Authorization: `Bearer ${credential}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
           const csId = csResp.data["id"];
           setCsUrl({
             url: `https://youtube.com/live/${csId}?feature=share`,
@@ -190,18 +190,18 @@ export const useStream = (
     if (!day) {
       return;
     }
-    const [dateTitle] = makeDateString(new Date(csUrl.date));
-    const text = `配信日: ${dateTitle}\nCS: ${csUrl.url}\n主日: ${url.url}\nご確認のほどよろしくお願いいたします。`;
+    const [dateTitle] = makeDateString(new Date(url.date));
+    const text = `配信日: ${dateTitle}\n主日: ${url.url}\nご確認のほどよろしくお願いいたします。`;
     navigator.clipboard.writeText(text);
     setNotice("Slack用文言");
     setNoticeOpen(true);
-  }, [day, csUrl.date, csUrl.url, url.url, setNotice, setNoticeOpen]);
+  }, [day, url.date, url.url, setNotice, setNoticeOpen]);
 
   const body = useMemo(() => {
     if (day === null) {
       return null;
     }
-    const isOld = isBefore(new Date(csUrl.date), day);
+    const isOld = isBefore(new Date(url.date), day);
     return (
       <Modal
         open={open}
@@ -263,7 +263,7 @@ export const useStream = (
             />
           </Stack>
           <Typography color={isOld ? "red" : undefined}>
-            配信日: {csUrl.date}
+            配信日: {url.date}
             {isOld ? "(古くなっています)" : ""}
           </Typography>
           {!CS_SKIP ? (
@@ -294,7 +294,6 @@ export const useStream = (
     );
   }, [
     create,
-    csUrl.date,
     csUrl.url,
     day,
     handleClose,
@@ -303,6 +302,7 @@ export const useStream = (
     page,
     progressing,
     setPage,
+    url.date,
     url.url,
   ]);
 
@@ -471,7 +471,7 @@ export const useWeekdayStream = (
   const copyBody1 = useCallback(() => {
     const text = `${makeBookString(book1)}\n\n${
       tuesdayUrl.url
-    }\n\n担当  髙橋 潤`;
+    }\n\n担当  川村 満`;
     navigator.clipboard.writeText(text);
     setNotice("メール用本文");
     setNoticeOpen(true);
