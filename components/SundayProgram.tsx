@@ -138,11 +138,11 @@ export const useSundayProgram = (
     return day.getDate() <= 7;
   }, [day]);
 
-  const isFourSunday = useMemo(() => {
+  const isCsJoint = useMemo(() => {
     if (!day || day.getDay() !== 0) {
       return false;
     }
-    return day.getDate() >= 22 && day.getDate() <= 28;
+    return day.getDate() >= 22;
   }, [day]);
 
   const onChangeRadio = useCallback(
@@ -199,7 +199,7 @@ export const useSundayProgram = (
     psalms,
     song1,
     song2,
-    isFourSunday
+    isCsJoint
   );
   const secondaryHTML = useSecondaryHTML(
     title2,

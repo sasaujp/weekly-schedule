@@ -34,14 +34,14 @@ export const usePrimaryHTML = (
   psalms: string,
   song1: string,
   song2: string,
-  isFourth: boolean
+  isCsJoint: boolean
 ) => {
   return useMemo(() => {
-    const cs = isFourth
-      ? `<strong>教会学校　　9時・大礼拝堂<a href="https://www.ginza-church.com/cs/top/">（インターネット配信・家庭礼拝）</a></strong>`
-      : `<strong>教会学校　　9時</strong><br>
-    幼稚科・小学科　<strong>大礼拝堂<a href="https://www.ginza-church.com/cs/top/">（インターネット配信・家庭礼拝）</a></strong><br>
-    ジュニア科　<strong>1階福音会センター</strong>`;
+    const cs = isCsJoint
+      ? `<strong><a href="https://www.ginza-church.com/cs/top/">教会学校</a>　　9時・大礼拝堂</strong>`
+      : `<strong><a href="https://www.ginza-church.com/cs/top/">教会学校</a>　　9時</strong><br>
+    幼稚科・小学科　<strong>大礼拝堂</strong><br>
+    ジュニア科　<strong>小礼拝堂</strong>`;
 
     return `${cs}<br>
 <br>
@@ -50,7 +50,7 @@ export const usePrimaryHTML = (
 説教　「${title}」　${paster}<br>
 聖書　${makeChapterString(bible)}<br>
 讃美歌　${song1}、${song2}`;
-  }, [url, title, paster, bible, psalms, song1, song2, isFourth]);
+  }, [url, title, paster, bible, psalms, song1, song2, isCsJoint]);
 };
 
 export const useSecondaryHTML = (
